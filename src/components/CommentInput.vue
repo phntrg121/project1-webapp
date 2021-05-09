@@ -3,10 +3,10 @@
     <div v-if="$store.getters.isAuthenticated" class="input">      
       <img :src="user.avatar"/>
       <div class="write_comment">        
-        <input type="text"/>
-        <div class="btn_group">            
-          <button>Cancel</button>
-          <button>Send</button>
+        <input type="text" placeholder="Add a public comment"/>
+        <div class="cmt_btn_group">            
+          <button class="comment_cancel">Cancel</button>
+          <button class="comment_send">Send</button>
         </div>
       </div>
     </div>
@@ -51,15 +51,54 @@ export default {
 }
 .write_comment input{
   width: 100%;
+  border: 0;
+  font-size: 14px;
+  background: transparent;
+  outline: 0;
+  border-bottom: 2px solid #ccc;
+  transition: 0.2s;
 }
 
-.btn_group{
+.cmt_btn_group{
   display: flex;
   flex-direction: row;
   justify-content:flex-end;
 }
 
-.btn_group button{
+.cmt_btn_group button{
   margin: 10px;
+  width: 72px;
+  padding: 5px 10px;
+  font-weight: 400;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.cmt_btn_group button:hover{
+  cursor: pointer;
+}
+
+.comment_cancel{
+  border-color: #666;
+  color: #666
+}
+
+.comment_send{
+  border-color: blue;
+  color: blue
+}
+
+.write_comment input:placeholder-shown ~ .cmt_btn_group button{  
+  visibility: hidden;
+}
+
+.write_comment input:not(placeholder-shown) ~ .cmt_btn_group button{  
+  visibility: visible
+}
+.write_comment input:focus ~ .cmt_btn_group button{  
+  visibility: visible
+}
+.write_comment input:focus{  
+  border-bottom: 2px solid blue;
 }
 </style>

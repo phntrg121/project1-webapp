@@ -2,7 +2,7 @@
   <div class="video_tile" @click="watch()">
     <img class="thumbnail" :src="video.thumbnail" width="240" height="160"/>
     <label class="title">{{video.title}}</label>
-    <label v-if="user" class="uploader">{{user.username}}</label>
+    <label v-if="uploader" class="uploader">{{uploader.username}}</label>
     <label class="view">{{video.views}} views</label>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return{
-      user: null,
+      uploader: null,
     }
   },
   methods:{
@@ -30,12 +30,12 @@ export default {
   },
   mounted(){
     UserService.getById(this.video.uploaderId)
-      .then(res => {
-        if(res.data.message == 'OK'){
-          this.user = res.data.data
-        }
-      })
-      .catch((err)=>console.log(err))
+    .then(res => {
+      if(res.data.message == 'OK'){
+        this.uploader = res.data.data
+      }
+    })
+    .catch((err)=>console.log(err))
   }
 }
 </script>
@@ -44,7 +44,7 @@ export default {
 .video_tile{
   width: 240px;
   height: 240px;
-  background: white;
+  background: transparent;
   margin: 20px;
   display: flex;
   flex-wrap: wrap;
@@ -52,7 +52,7 @@ export default {
 
 .video_tile label{
   width: 100%;
-  padding: 0;
+  padding: 0px 10px;
 }
 
 .title{

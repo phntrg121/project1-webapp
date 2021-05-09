@@ -1,26 +1,22 @@
 <template>
   <div class="home">
-    <nav-bar/>
     <div class="display">
       <div class="videos-list">
         <div v-for="video in videos" :key="video">
           <video-tile :video="video"/>
         </div>
-      </div>
-    </div>    
+      </div>  
+    </div>     
   </div>
 </template>
 
 <script>
-import NavBar from '../components/NavBar.vue'
 import VideoTile from '../components/VideoTile.vue'
-
 import VideoService from '../services/VideoService'
 
 export default {
   name: 'Home',
   components: {
-    NavBar,
     VideoTile
   },
   data(){
@@ -51,9 +47,9 @@ export default {
   padding: 10px;
 }
 
-@media screen and (max-width: 596px) { .videos-list { width: 280px; } }
-@media screen and (min-width: 597px) and (max-width: 876px) { .videos-list { width: 560px; } }
-@media screen and (min-width: 877px) and (max-width: 1156px) { .videos-list { width: 840px; } }
-@media screen and (min-width: 1157px) and (max-width: 1436px) { .videos-list { width: 1120px; } }
-@media screen and (min-width: 1437px) and (max-width: 1716px) { .videos-list { width: 1400px; } }
+/* @media screen and (max-width: 596px) { .videos-list { width: 280px; } } */
+/* @media screen and (min-width: 597px) and (max-width: 876px) { .videos-list { width: 560px; } } */
+/* @media screen and (min-width: 877px) and (max-width: 1156px) { .videos-list { width: 840px; } } */
+/* @media screen and (min-width: 1157px) and (max-width: 1436px) { .videos-list { width: 1120px; } } */
+/* @media screen and (min-width: 1437px) and (max-width: 1716px) { .videos-list { width: 1400px; } } */
 </style>

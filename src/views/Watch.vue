@@ -1,5 +1,5 @@
 <template>
-  <div class="watch">
+  <div id="watch">
     <nav-bar/>
     <div v-if="video" class="video">
       <div class="video_watch">
@@ -17,11 +17,17 @@
           </div>
         </div>        
         <div class="video_info">          
-          <div  v-if="uploader" class="uploader">
-            <img :src="uploader.avatar" alt="">
-            <label>{{uploader.username}}</label>
+          <div  v-if="uploader && sub" style="display: flex; justify-content: space-between; width: 100%; padding: 10px">
+            <div class="video_uploader">
+              <img :src="uploader.avatar" alt="">
+              <div>
+                <label class="uploader_name">{{uploader.username}}</label>
+                <label class="uploader_sub">{{sub.subscriberCount}} subscribers</label>
+              </div>
+            </div>
+            <button v-show="!owned" :class="[isSubscribed? 'video_subscribe subscribed':'video_subscribe not_subscribed']" @click="subscribe">SUBSCRIBE</button>
           </div>
-          <div class="description">
+          <div class="video_description">
             <div>{{video.description}}</div>
           </div>
         </div>          
@@ -37,10 +43,8 @@
       </div>
       <div class="related_video">
         <label>Related Videos</label>
-        <div class="video_list">
-          <div v-for="video in relatedVideos" :key="video">
-            <related-video :video="video"/>
-          </div>
+        <div v-for="video in relatedVideos" :key="video">
+          <related-video :video="video"/>
         </div>
       </div>
     </div>
@@ -55,6 +59,7 @@ import RelatedVideo from '../components/RelatedVideo.vue'
 import UserService from '../services/UserService'
 import VideoService from '../services/VideoService'
 import CommentService from '../services/CommentService'
+import SubscriptionService from '../services/SubscriptionService'
 
 export default {
   name: '',
@@ -68,50 +73,107 @@ export default {
     return{
       video: null,
       uploader: null,
+      sub: null,
+      isSubscribed: false,
+      owned: false,
       videoId: this.$route.params.id,
       relatedVideos: [],
       comments: []
     }
   },
+  methods: {
+    async getVideo() {
+      VideoService.getVideo(this.videoId)
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.video = res.data.data
+
+          this.getUploader()
+          this.getRelatedVideo()
+        }
+      })
+      .catch((err)=>console.log(err))
+
+      this.getComment()
+    },
+    async getUploader(){
+      UserService.getById(this.video.uploaderId)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.uploader = res.data.data
+          this.getSubCount()
+          this.checkSub()
+        }
+      })
+      .catch(err=>console.log(err))
+    },
+    async getRelatedVideo(){
+      VideoService.getRelatedVideo({ videoId: this.videoId, tags: this.video.tags})
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.relatedVideos = res.data.data
+        }
+      })
+      .catch((err)=>console.log(err))
+    },
+    async getComment(){
+      CommentService.getVideoComment(this.videoId)
+      .then(res => {
+        if(res.data.message=="OK"){
+          this.comments = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    },
+    async getSubCount(){
+      SubscriptionService.getSubCount(this.video.uploaderId)
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.sub = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    },
+    async checkSub(){
+      if(!this.$store.getters.isAuthenticated) return
+      if(this.$store.getters.currentUser.id == this.video.uploaderId){
+        this.owned = true
+        return
+      }
+      SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.video.uploaderId })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    },
+    async subscribe(){
+      if(!this.$store.getters.isAuthenticated){
+        this.$router.push({ name: 'SignIn' })
+        return
+      }
+      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.video.uploaderId })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    }
+  },
   mounted(){
-    VideoService.getVideo(this.videoId)
-    .then(res => {
-      if(res.data.message == "OK"){
-        this.video = res.data.data
-
-        UserService.getById(this.video.uploaderId)
-        .then(res=>{
-          if(res.data.message == "OK"){
-            this.uploader = res.data.data
-          }
-        })
-        .catch(err=>console.log(err))
-
-        VideoService.getRelatedVideo({ videoId: this.videoId, tags: this.video.tags})
-        .then(res => {
-          if(res.data.message == "OK"){
-            this.relatedVideos = res.data.data
-          }
-        })
-        .catch((err)=>console.log(err))
-
-      }
-    })
-    .catch((err)=>console.log(err))
-
-    CommentService.getVideoComment(this.videoId)
-    .then(res => {
-      if(res.data.message=="OK"){
-        this.comments = res.data.data
-      }
-    })
-    .catch(err => console.log(err))
+    this.getVideo()
   }
 }
 </script>
 
 <style scoped>
-.watch .video{
+#watch{
+  background: rgb(240,240,240);
+}
+
+#watch .video{
   display: flex;
   justify-content: center;
 }
@@ -162,24 +224,56 @@ export default {
   border-bottom: 2px solid #ccc;
 }
 
-.uploader{
+.video_uploader{
   display: flex;
-  padding: 10px;
 }
 
-.uploader img{
+.video_uploader img{
   width: 40px;
   height: 40px;
   border-radius: 20px;
 }
 
-.uploader label{
-  padding: 10px;
-  vertical-align: middle;
-  font-weight: 400;
+.video_uploader div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 }
 
-.description{
+.uploader_name{
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.uploader_sub{
+  font-size: 13px;
+  color: #666;
+}
+
+.video_subscribe{
+  margin-right: 20px;
+  font-weight: bold;
+  padding: 5px 20px;
+  text-decoration: 0;
+  border: 0;
+}
+
+.video_subscribe:hover{
+  cursor: pointer;
+}
+
+.not_subscribed{
+  background: red;
+  color: white;
+}
+
+.subscribed{
+  background: #ccc;
+  color: white;
+}
+
+.video_description{
   padding: 0px 10px;
   margin-left: 50px;
   margin-bottom: 20px;
@@ -196,8 +290,8 @@ export default {
 
 .related_video{
   height: 100%;
-  max-width: 280px;
+  width: 100%;
   padding: 10px;
+  max-width: 300px;
 }
-
 </style>

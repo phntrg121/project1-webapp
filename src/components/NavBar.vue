@@ -1,22 +1,29 @@
 <template>
   <div id="navbar">
-    <div id="start">
+    <div class="nav_start">      
+      <div class="head">
+        <button>
+          <svg style="width: 100%; height: 100%;">
+            <g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g>
+          </svg>
+        </button>
+      </div>
       <router-link to="/">
         <div class="lead_text">METUBE</div>
       </router-link>
     </div>
 
-    <div id="center">        
+    <div class="nav_center">        
       <input type="search" class="search_text" v-model="searchText" placeholder="Search...">
       <button type="submit" class="search_button" @click="search()">Search</button>
     </div>
 
-    <div id="end">
+    <div class="nav_end">
       <div v-if="!$store.getters.isAuthenticated">
         <router-link to="/signin" class="signin_button" style="text-decoration: none" tag="button">Sign In</router-link>
       </div>
       <div v-else>
-        <img src="http://www.jdevoto.cl/web/wp-content/uploads/2018/04/default-user-img.jpg" alt="Avatar" @click="showMenu()" class="profile_pic">
+        <img :src="$store.getters.currentUser.avatar" @click="showMenu()" class="profile_pic">
         <div class="dropdown_menu" v-if="dropDown">
           <div class="dropdown_menu_item" @click="goChannel()">
             <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon">
@@ -100,12 +107,26 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  background: white;
-  box-shadow: 0px 5px 10px #ccc;
-  
+  background: white;  
 }
-#navbar #start{
+#navbar .nav_start{
   background: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.head{
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.head button{  
+  padding: 8px;
+  background: transparent;
+  border: 0;
 }
 
 .lead_text{
@@ -113,12 +134,12 @@ export default {
   padding: 10px;
 }
 
-#navbar #center{
+#navbar .nav_center{
   background: transparent;
 }
 
-#center input,
-#center button{
+.nav_center input,
+.nav_center button{
   height: 32px;
   font-size: 16px;
   border: none;
@@ -147,7 +168,7 @@ export default {
   background: #aaa;
 }
 
-#navbar #end{
+#navbar .nav_end{
   background: transparent;
 }
 
@@ -170,6 +191,7 @@ export default {
   right: 10px;
   background: white;
   box-shadow: 0px 6px 12px #ccc;
+  z-index: 10;
 }
 
 .dropdown_menu hr{

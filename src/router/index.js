@@ -1,5 +1,10 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import { createRouter, createWebHistory } from "vue-router"
+import Main from '../views/Main.vue'
+import Home from '../views/Home.vue'
+import Explore from '../views/Explore.vue'
+import Subscription from '../views/Subscription.vue'
+import Library from '../views/Library.vue'
+import Channel from '../views/Channel.vue'
 import NotFound from '../views/NotFound.vue'
 import Watch from '../views/Watch.vue'
 import SignIn from '../views/SignIn.vue'
@@ -9,13 +14,40 @@ import Search from '../views/Search.vue'
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },  
-  {
-    path: '/search',
-    name: 'Search',
-    component: Search
+    name: 'Main',
+    component: Main,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: Home
+      },
+      {
+        path: '/explore',
+        name: 'Explore',
+        component: Explore
+      },
+      {
+        path: '/subscription',
+        name: 'Subscription',
+        component: Subscription
+      },
+      {
+        path: '/library',
+        name: 'Library',
+        component: Library
+      },
+      {
+        path: '/search',
+        name: 'Search',
+        component: Search
+      },
+      {        
+        path: '/channel',
+        name: 'Channel',
+        component: Channel
+      }
+    ]
   },
   {
     path: '/watch/:id',

@@ -30,6 +30,7 @@
 
 <script>
 import UserService from '../services/UserService'
+import SubscriptionService from '../services/SubscriptionService'
 
 export default {
   name: 'signin',
@@ -50,11 +51,14 @@ export default {
 
       UserService.signUp({ email: this.email, username: this.username, password: this.password })
       .then(res => {
-        if(res.data.message == 'OK'){          
-          this.loading = false
-          alert(res.data.message)
-          this.$store.dispatch('signUp', res.data.data)
-          this.$router.push({ name: 'Home' })
+        if(res.data.message == 'OK'){    
+          SubscriptionService.createSub(res.data.data.id)
+          .then(res =>{
+            this.loading = false
+            alert(res.data.message)
+            this.$store.dispatch('signUp', res.data.data)
+            this.$router.push({ name: 'Home' })
+          })         
         }
         else{                   
           this.loading = false
