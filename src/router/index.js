@@ -4,6 +4,10 @@ import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Subscription from '../views/Subscription.vue'
 import Library from '../views/Library.vue'
+import History from '../views/History.vue'
+import MyVideo from '../views/MyVideo.vue'
+import Liked from '../views/Liked.vue'
+import Playlist from '../views/Playlist.vue'
 import Channel from '../views/Channel.vue'
 import NotFound from '../views/NotFound.vue'
 import Watch from '../views/Watch.vue'
@@ -25,7 +29,8 @@ const routes = [
       {
         path: '/explore',
         name: 'Explore',
-        component: Explore
+        component: Explore,
+        alias: ['/explore/music', '/explore/gaming', '/explore/sport', '/explore/news']        
       },
       {
         path: '/subscription',
@@ -35,7 +40,29 @@ const routes = [
       {
         path: '/library',
         name: 'Library',
-        component: Library
+        component: Library,
+        children: [
+          {
+            path: '/history',
+            name: 'History',
+            component: History
+          },
+          {
+            path: '/myvideos',
+            name: 'MyVideo',
+            component: MyVideo
+          },
+          {
+            path: '/liked',
+            name: 'Liked',
+            component: Liked
+          },
+          {
+            path: '/playlist',
+            name: 'Playlist',
+            component: Playlist
+          },
+        ]
       },
       {
         path: '/search',

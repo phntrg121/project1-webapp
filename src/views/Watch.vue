@@ -126,7 +126,7 @@ export default {
       .catch(err => console.log(err))
     },
     async getSubCount(){
-      SubscriptionService.getSubCount(this.video.uploaderId)
+      SubscriptionService.getSubscriber(this.video.uploaderId)
       .then(res => {
         if(res.data.message == "OK"){
           this.sub = res.data.data
@@ -170,7 +170,7 @@ export default {
 
 <style scoped>
 #watch{
-  background: rgb(240,240,240);
+  background: #f9f9f9;
 }
 
 #watch .video{

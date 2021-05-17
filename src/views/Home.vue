@@ -3,7 +3,7 @@
     <div class="display">
       <div class="videos-list">
         <div v-for="video in videos" :key="video">
-          <video-tile :video="video"/>
+          <video-box :video="video"/>
         </div>
       </div>  
     </div>     
@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import VideoTile from '../components/VideoTile.vue'
+import VideoBox from '../components/VideoBox.vue'
 import VideoService from '../services/VideoService'
 
 export default {
   name: 'Home',
   components: {
-    VideoTile
+    VideoBox
   },
   data(){
     return {
@@ -27,8 +27,10 @@ export default {
   },
   mounted() {
     VideoService.getVideoPage(1)
-    .then(res => {
-      this.videos = res.data
+    .then(res => {      
+      if(res.data.message == "OK"){
+        this.videos = res.data.data
+      }
     })
     .catch((err) => console.log(err))
   },

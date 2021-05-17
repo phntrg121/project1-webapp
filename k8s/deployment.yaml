@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prj1-webapp-deployment
+  labels:
+    app: prj1-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prj1-webapp
+  template:
+    metadata:
+      labels:
+        app: prj1-webapp
+    spec:
+      containers:
+      - name: prj1-webapp
+        image: prj1-webapp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80    
+        env:
+        - name: VUE_APP_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: prj1-webapp-secret
+              key: vue-app-api-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prj1-webapp-service
+spec:
+  selector:
+    app: prj1-webapp
+  type: LoadBalancer
+  ports:
+    - name: prj1-webapp-service
+      port: 80
+      targetPort: 80
+      protocol: TCP

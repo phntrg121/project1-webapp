@@ -5,17 +5,21 @@
     </div>
     <div class="text">
       <label class="title">{{video.title}}</label>
-      <label v-if="uploader" class="uploader">{{uploader.username}}</label>
       <label class="view">{{video.views}} views</label>
+      <user-item class="uploader" :uid="video.uploaderId"/>
     </div>    
   </div>
 </template>
 
 <script>
 import UserService from '../services/UserService'
+import UserItem from '../components/UserItem'
 
 export default {
   name: 'RelatedVideo',
+  components:{
+    UserItem
+  },
   props: {    
     video: Object,
   },
@@ -68,9 +72,11 @@ export default {
 
 .title{
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .uploader, .view{
+  margin-bottom: 5px;
   font-size: 12px;
 }
 </style>

@@ -60,8 +60,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  border-top: 2px solid #ccc;
-  background: rgb(240, 240, 240);
+  /* border-top: 2px solid #ccc; */
+  background: #f9f9f9;
 }
 
 </style>
