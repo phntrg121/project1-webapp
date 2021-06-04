@@ -77,6 +77,7 @@ export default {
 }
 
 .select{
+  font-weight: bold;
   border-bottom: 3px solid #666;
 }
 

@@ -19,7 +19,7 @@
         <label class="text_label">Confirm password</label>
       </div>
       <div>
-      <input type="checkbox" class="agreed" placeholder="Agreed" v-model="agree">jshfjsadhfakjdfhakjd</div>
+      <input type="checkbox" class="agreed" v-model="agree"> I agreed to the term of service</div>
       <button type="submit" @click.stop.prevent="signUp()">Sign Up</button>
       <div class="signin-link">Already have account? 
         <router-link to="/signin">Sign in</router-link>

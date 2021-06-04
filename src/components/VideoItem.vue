@@ -1,6 +1,6 @@
 <template>
   <div id="video_item">
-    <img :src="video.thumbnail" alt="" width="240" height="160" @click="watch()">
+    <img :src="video.thumbnail" alt="video thumbnail" width="240" height="160" @click="watch()">
     <div class="video_info">      
       <label style="font-weight: bold; font-size: 20px;" @click="watch()">{{video.title}}</label>
       <label style="color: #666; font-size: 14px ">{{video.views}} views</label>

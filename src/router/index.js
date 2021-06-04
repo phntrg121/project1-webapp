@@ -3,17 +3,16 @@ import Main from '../views/Main.vue'
 import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Subscription from '../views/Subscription.vue'
-import Library from '../views/Library.vue'
-import History from '../views/History.vue'
-import MyVideo from '../views/MyVideo.vue'
-import Liked from '../views/Liked.vue'
-import Playlist from '../views/Playlist.vue'
-import Channel from '../views/Channel.vue'
 import NotFound from '../views/NotFound.vue'
 import Watch from '../views/Watch.vue'
 import SignIn from '../views/SignIn.vue'
 import SignUp from '../views/SignUp.vue'
 import Search from '../views/Search.vue'
+import Content from '../views/Content.vue'
+
+//other routes
+import channel from './channel'
+import library from './library'
 
 const routes = [
   {
@@ -38,42 +37,17 @@ const routes = [
         component: Subscription
       },
       {
-        path: '/library',
-        name: 'Library',
-        component: Library,
-        children: [
-          {
-            path: '/history',
-            name: 'History',
-            component: History
-          },
-          {
-            path: '/myvideos',
-            name: 'MyVideo',
-            component: MyVideo
-          },
-          {
-            path: '/liked',
-            name: 'Liked',
-            component: Liked
-          },
-          {
-            path: '/playlist',
-            name: 'Playlist',
-            component: Playlist
-          },
-        ]
-      },
-      {
         path: '/search',
         name: 'Search',
         component: Search
       },
-      {        
-        path: '/channel',
-        name: 'Channel',
-        component: Channel
-      }
+      {
+        path: '/content/:id',
+        name: 'Content',
+        component: Content,
+      },
+      library,
+      channel,
     ]
   },
   {

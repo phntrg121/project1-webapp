@@ -1,6 +1,6 @@
 <template>
   <div class="video_box">
-    <img class="thumbnail" :src="video.thumbnail" width="240" height="160" @click="watch()"/>
+    <img class="thumbnail" :src="video.thumbnail" alt="video thumbnail" width="240" height="160" @click="watch()"/>
     <label class="title" @click="watch()">{{video.title}}</label>
     <label class="view">{{video.views}} views</label>
     <user-item :uid="video.uploaderId"  class="uploader"/>

@@ -1,12 +1,16 @@
 <template>
-  <div id="channel">  
+  <div id="channel_about">
+    About
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Channel',
+  name: 'Main',
+  data(){
+    return {
+    }
+  },
 }
 </script>
 

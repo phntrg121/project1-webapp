@@ -1,7 +1,7 @@
 <template>
   <div class="relatedvideo" @click="watch()">
     <div>
-      <img class="thumbnail" :src="video.thumbnail" width="120" height="90"/>
+      <img class="thumbnail" :src="video.thumbnail" alt="video thumbnail" width="120" height="90"/>
     </div>
     <div class="text">
       <label class="title">{{video.title}}</label>

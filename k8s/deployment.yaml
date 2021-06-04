@@ -6,6 +6,7 @@ metadata:
     app: prj1-webapp
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: prj1-webapp

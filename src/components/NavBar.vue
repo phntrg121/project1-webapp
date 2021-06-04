@@ -88,6 +88,10 @@ export default {
     },
     goChannel(){
       this.closeMenu()
+      this.$router.push({
+        path: `/channel/${this.$store.getters.currentUser.id}`,   
+        // params: { id: this.$store.getters.currentUser.id } 
+      })
     },
     goLibrary(){
       this.closeMenu()
