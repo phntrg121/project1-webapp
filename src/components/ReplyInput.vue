@@ -1,17 +1,17 @@
 <template>
-  <div class="commentinput">
+  <div class="replyinput">
     <div v-if="$store.getters.isAuthenticated" class="input">      
       <img :src="user.avatar"/>
-      <div class="write_comment">
-        <input ref="cmt_input" type="text" placeholder="Add a public comment" @click="type=true"/>
-        <div v-show="type" class="cmt_btn_group">            
-          <button class="comment_cancel" @click="type=false">Cancel</button>
-          <button class="comment_send">Send</button>
+      <div class="write_reply">
+        <input ref="cmt_input" type="text" placeholder="Add a public reply"/>
+        <div class="cmt_btn_group">            
+          <button class="reply_cancel" @click="closeReply">Cancel</button>
+          <button class="reply_send">Send</button>
         </div>
       </div>
     </div>
     <div v-else>
-      <div>You must signed in to leave comment</div>
+      <div>You must signed in to reply</div>
     </div>
   </div>
 </template>
@@ -19,18 +19,22 @@
 <script>
 export default {
   name: '',
+  props:{
+    parent: {
+      type: String,
+      default: ''
+    },
+  },
   data(){
     return {
       user: this.$store.getters.currentUser,
-      type: false,
     }
   },
   methods: {
-    typing(){
-      this.type = true
-      this.$refs.cmt_input.focus()
-    },    
-    async postComment(){
+    closeReply(){
+      this.$emit('close')
+    },
+    async postReply(){
 
     }
   }
@@ -39,10 +43,9 @@ export default {
 
 <style scoped>
 
-.commentinput{
+.replyinput{
   display: flex;
-  padding: 10px 0px;
-  width: 100%;
+  margin-left: 10px;
 }
 
 .input{
@@ -51,17 +54,17 @@ export default {
 }
 
 .input img{
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
 }
 
-.write_comment{
+.write_reply{
   width: 100%;
-  padding: 10px;
+  margin-left: 10px;
 }
 
-.write_comment input{
+.write_reply input{
   width: 100%;
   border: 0;
   font-size: 14px;
@@ -90,27 +93,27 @@ export default {
   cursor: pointer;
 }
 
-.comment_cancel{
+.reply_cancel{
   border-color: #666;
   color: #666
 }
 
-.comment_send{
+.reply_send{
   border-color: blue;
   color: blue
 }
 
-/* .write_comment input:placeholder-shown ~ .cmt_btn_group button{  
+/* .write_reply input:placeholder-shown ~ .cmt_btn_group button{  
   visibility: hidden;
 }
 
-.write_comment input:not(placeholder-shown) ~ .cmt_btn_group button{  
+.write_reply input:not(placeholder-shown) ~ .cmt_btn_group button{  
   visibility: visible
 }
-.write_comment input:focus ~ .cmt_btn_group button{  
+.write_reply input:focus ~ .cmt_btn_group button{  
   visibility: visible
 } */
-.write_comment input:focus{  
+.write_reply input:focus{  
   border-bottom: 2px solid blue;
 }
 </style>

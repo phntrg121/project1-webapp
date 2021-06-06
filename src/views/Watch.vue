@@ -17,7 +17,7 @@
           </div>
         </div>        
         <div class="video_info">          
-          <div  v-if="uploader && sub" style="display: flex; justify-content: space-between; width: 100%; padding: 10px">
+          <div  v-if="uploader && sub" style="display: flex; justify-content: space-between; width: 100%; margin-top: 10px;">
             <div class="video_uploader">
               <img :src="uploader.avatar" alt="">
               <div>
@@ -117,7 +117,7 @@ export default {
       .catch((err)=>console.log(err))
     },
     async getComment(){
-      CommentService.getVideoComment(this.videoId)
+      CommentService.getVideoComments(this.videoId)
       .then(res => {
         if(res.data.message=="OK"){
           this.comments = res.data.data
@@ -252,7 +252,6 @@ export default {
 }
 
 .video_subscribe{
-  margin-right: 20px;
   font-weight: bold;
   padding: 5px 20px;
   text-decoration: 0;
@@ -274,7 +273,6 @@ export default {
 }
 
 .video_description{
-  padding: 0px 10px;
   margin-left: 50px;
   margin-bottom: 20px;
   font-size: 14px;
@@ -285,7 +283,7 @@ export default {
 }
 
 .comment{
-  padding: 10px;
+  margin-top: 10px
 }
 
 .related_video{

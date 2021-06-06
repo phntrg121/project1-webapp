@@ -4,6 +4,14 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted(){
+    console.log(process.env.VUE_APP_API_URL)
+  }
+}
+</script>
+
 <style>
 body{
   margin: 0;

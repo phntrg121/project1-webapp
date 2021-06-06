@@ -1,60 +1,126 @@
 <template>
-  <div class="comment">
-    <div class="commnet_author">
-      <img :src="comment.avatar">
-      <div>
-        <label>{{comment.from}}</label>
-        <p>{{comment.content}}</p>
-        <div class="comment_react">
-          <button>Like</button>
-          <label>{{comment.likes}}</label>
-          <label>REPLY</label>
+  <div v-if="author" class="comment">
+    <div class="comment_avatar">
+      <img :src="author.avatar">
+    </div>
+    <div class="comment_content">
+      <label>{{author.username}}</label>
+      <p>{{comment.content}}</p>
+      <div class="comment_react">
+        <button>Like</button>
+        <label>{{comment.likes}}</label>
+        <label @click="showReplyInput=true">REPLY</label>
+      </div>
+      <reply-input v-if="showReplyInput" @close="showReplyInput=false"/>   
+      <div v-if="comment.replyCount>0" class="comment_reply">
+        <div v-if="!showReplies"><label @click="getReply">Show {{comment.replyCount}} replies</label></div>
+        <div v-else><label @click="showReplies=!showReplies">Hide {{comment.replyCount}} replies</label></div>
+        <div v-if="showReplies">
+          <div v-for="rep in replies" :key="rep" class="replies">
+            <reply :reply="rep"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="reply">
     </div>
   </div>
 </template>
 
 <script>
+import { Comment } from '@vue/runtime-core'
+import UserService from '../services/UserService'
+import CommentService from '../services/CommentService'
+import Reply from './Reply.vue'
+import ReplyInput from './ReplyInput.vue'
 export default {
-  name: '',
+  components: { Reply, ReplyInput },
+  name: 'comment',
   props:{
     comment: Object
   },
+  data(){
+    return {
+      author: null,
+      showReplies: false,
+      showReplyInput: false,
+      replies: [],
+    }
+  },
+  methods: {
+    async getAuthorInfo(){
+      UserService.getById(this.comment.from)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.author = res.data.data
+        }
+      })
+      .catch(err=>console.log(err))
+    },
+    async getReply(){
+      if(this.replies.length > 0) {
+        this.showReplies = true
+        return
+      }
+      CommentService.getCommentReplies(this.comment.id)
+      .then(res=>{
+        this.replies = res.data.data        
+        this.showReplies = true;
+      })
+      .catch(err=>console.log(err))
+    }
+  },
+  mounted(){
+    this.getAuthorInfo()
+  }
 }
 </script>
 
 <style scoped>
-.commnet_author{
+.comment{  
   display: flex;
+  flex-direction: row;
 }
 
-.commnet_author img{
+.comment_avatar img{
   width: 40px;
   height: 40px;
   border-radius: 20px;
   background: transparent;
 }
 
-.commnet_author label,
-.author p{
+.comment_content{
+  width: 100%;
+}
+.comment_content > label,
+.comment_content > p{
   margin: 0px 0px 10px 10px;
   word-wrap: normal;
 }
-
-.commnet_author label{
+.comment_content > label{
   font-size: 12px;
   font-weight: bold;
 }
-
-.commnet_author p{
+.comment_content > p{
   font-size: 14px;
 }
 
 .comment_react{
-  color: #666;
+  color: #666;  
+  margin: 0px 0px 10px 10px;
+  font-size: 14px;
+}
+.comment_react > label{  
+  margin-left: 10px;
+}
+
+.comment_reply{
+    margin-left: 10px;
+}
+.comment_reply > div > label{
+  font-size: 14px;
+  color: blue;
+}
+.comment_reply > div > label:hover{
+  cursor: pointer;
 }
 
 </style>

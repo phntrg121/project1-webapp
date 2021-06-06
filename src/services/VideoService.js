@@ -3,17 +3,17 @@ import { storage } from './firebase'
 
 export default {
   getVideoPage(pageNum){
-    let page = pageNum == 1 ? '': `page=${pageNum}`
-    return axios.get(process.env.VUE_APP_API_URL + '/videos/' + page)
+    let page = pageNum == 1 ? '': `/page=${pageNum}`
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/video' + page)
   },
   getVideo(id){
-    return axios.get(process.env.VUE_APP_API_URL + '/videos/' + id)
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/video/' + id)
   },
   getRelatedVideo(tags){
-    return axios.post(process.env.VUE_APP_API_URL + '/videos/related', tags)
+    return axios.post(process.env.VUE_APP_API_URL + '/videos/video/related', tags)
   },
   getUploadVideo(id){    
-    return axios.get(process.env.VUE_APP_API_URL + '/videos/uploads/' + id)
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/upload/channel=' + id)
   },
   async upload(video, thumbnail, info){
 

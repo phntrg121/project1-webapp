@@ -2,11 +2,11 @@
   <div id="navbar">
     <div class="nav_start">      
       <div class="head">
-        <button>
-          <svg style="width: 100%; height: 100%;">
+        <div>
+          <svg style="width: 24px; height: 24px;">
             <g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g>
           </svg>
-        </button>
+        </div>
       </div>
       <router-link to="/">
         <div class="lead_text">METUBE</div>
@@ -120,17 +120,19 @@ export default {
 }
 
 .head{
-  width: 40px;
+  width: 60px;
   height: 40px;
   display: flex;
   justify-content: center;
   vertical-align: middle;
 }
 
-.head button{  
-  padding: 8px;
+.head div{
   background: transparent;
   border: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .lead_text{
