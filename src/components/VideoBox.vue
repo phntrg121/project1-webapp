@@ -34,7 +34,7 @@ export default {
   width: 240px;
   height: 240px;
   background: transparent;
-  margin: 20px;
+  margin: 10px;
   display: flex;
   flex-wrap: wrap;
 }

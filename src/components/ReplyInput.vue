@@ -3,10 +3,10 @@
     <div v-if="$store.getters.isAuthenticated" class="input">      
       <img :src="user.avatar"/>
       <div class="write_reply">
-        <input ref="cmt_input" type="text" placeholder="Add a public reply"/>
+        <input ref="cmt_input" v-model="replyContent" type="text" placeholder="Add a public reply"/>
         <div class="cmt_btn_group">            
           <button class="reply_cancel" @click="closeReply">Cancel</button>
-          <button class="reply_send">Send</button>
+          <button class="reply_send" @click="postReply">Send</button>
         </div>
       </div>
     </div>
@@ -17,9 +17,11 @@
 </template>
 
 <script>
+import CommentService from '../services/CommentService'
 export default {
   name: '',
   props:{
+    commentId: String,
     parent: {
       type: String,
       default: ''
@@ -28,6 +30,7 @@ export default {
   data(){
     return {
       user: this.$store.getters.currentUser,
+      replyContent: "",
     }
   },
   methods: {
@@ -35,7 +38,17 @@ export default {
       this.$emit('close')
     },
     async postReply(){
-
+      if(this.replyContent=="") return
+      this.type=false
+      CommentService.postReply({commentId: this.commentId, from: this.user.id, content: this.replyContent, parent: this.parent})
+      .then(res=>{
+        if(res.data.message=="OK"){          
+          this.$emit("onSuccessPost", res.data.data)
+          this.replyContent=""
+        }
+        else alert("Can't post comment")
+      })
+      .catch(err=>console.log(err))
     }
   }
 }

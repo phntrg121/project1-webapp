@@ -9,9 +9,9 @@
       <div class="reply_react">
         <button>Like</button>
         <label>{{reply.likes}}</label>
-        <label @click="showReplyInput=true">REPLY</label>
+        <label @click="showReplyInput=false">REPLY</label>
       </div>
-      <reply-input v-if="showReplyInput" :parent="reply.id" @close="showReplyInput=false"/>   
+      <reply-input v-if="showReplyInput" :parent="reply.id" :commentId="reply.commentId" @close="showReplyInput=false" @onSuccessPost="onSuccessPost"/>
       <div v-if="reply.childs.length>0" class="reply_reply">
         <div v-for="rep in reply.childs" :key="rep" class="replies">
           <reply :reply="rep"/>
@@ -23,7 +23,6 @@
 
 <script>
 import UserService from '../services/UserService'
-import CommentService from '../services/CommentService'
 import ReplyInput from './ReplyInput.vue'
 import Reply from './Reply.vue'
 export default {
@@ -48,6 +47,10 @@ export default {
       })
       .catch(err=>console.log(err))
     },
+    onSuccessPost(value){
+      this.reply.childs.splice(0,0,value)
+      this.showReplyInput=false
+    }
   },
   mounted(){
     this.getAuthorInfo()
@@ -91,4 +94,7 @@ export default {
   margin-left: 10px;
 }
 
+.reply_reply{
+    margin-left: 10px;
+}
 </style>

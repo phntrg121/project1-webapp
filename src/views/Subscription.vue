@@ -76,6 +76,7 @@ export default {
   background: #f1f1f1;
   overflow-y: auto;
 }
+
 .subscription_list > div{  
   width: calc(100% - 40px);
   margin: 20px;
@@ -83,8 +84,9 @@ export default {
 
 .subscription_videos{
   max-height: 100%;
-  width: 100%;
+  width: calc(100%-20px);
   overflow-y: auto;
+  padding: 10px
 }
 
 .video_list{

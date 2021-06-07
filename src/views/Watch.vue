@@ -33,7 +33,7 @@
         </div>          
         <div class="comment">
           <label>{{comments.size}} Comments</label>
-          <comment-input/>
+          <comment-input @onSuccessPost="onSuccessPost"/>
           <div class="comment_list">
             <div v-for="comment in comments" :key="comment">
               <comment :comment="comment"/>
@@ -160,6 +160,9 @@ export default {
         }
       })
       .catch(err => console.log(err))
+    },
+    onSuccessPost(value){
+      this.comments.splice(0,0,value)
     }
   },
   mounted(){

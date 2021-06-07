@@ -3,10 +3,10 @@
     <div v-if="$store.getters.isAuthenticated" class="input">      
       <img :src="user.avatar"/>
       <div class="write_comment">
-        <input ref="cmt_input" type="text" placeholder="Add a public comment" @click="type=true"/>
+        <input ref="cmt_input" v-model="commentContent" type="text" placeholder="Add a public comment" @click="type=true"/>
         <div v-show="type" class="cmt_btn_group">            
           <button class="comment_cancel" @click="type=false">Cancel</button>
-          <button class="comment_send">Send</button>
+          <button class="comment_send" @click="postComment">Send</button>
         </div>
       </div>
     </div>
@@ -17,12 +17,14 @@
 </template>
 
 <script>
+import CommentService from '../services/CommentService'
 export default {
   name: '',
   data(){
     return {
       user: this.$store.getters.currentUser,
       type: false,
+      commentContent: "",
     }
   },
   methods: {
@@ -31,7 +33,17 @@ export default {
       this.$refs.cmt_input.focus()
     },    
     async postComment(){
-
+      if(this.commentContent=="") return
+      this.type=false
+      CommentService.postComment({videoId: this.$route.params.id, from: this.user.id, content: this.commentContent})
+      .then(res=>{
+        if(res.data.message=="OK"){          
+          this.$emit("onSuccessPost", res.data.data)
+          this.commentContent=""
+        }
+        else alert("Can't post comment")
+      })
+      .catch(err=>console.log(err))
     }
   }
 }

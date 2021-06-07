@@ -1,11 +1,19 @@
 <template>
   <div id="channel">
     <div class="channel_banner">
+      <div class="banner_img">
+        <img/>
+      </div>
+    </div>
+    <div class="channel_banner">
       <div v-if="channel" class="banner">
         <div class="banner_info">
           <img width="120" height="120" :src="channel.avatar" alt="user image">
-          <label>{{channel.username}}</label>
-        </div>
+          <div style="display:flex;flex-direction:column">
+            <label style="font-size:20px">{{channel.username}}</label>
+            <label style="font-size:14px;color:#666">{{subCount}} subscribers</label>          
+          </div>
+        </div>        
         <div class="banner_button">
           <button v-if="isOwner()" class="btn_enable" @click="toUpload">UPLOAD</button>
           <button v-if="isOwner()" class="btn_enable" @click="toEdit">EDIT</button>
@@ -14,7 +22,7 @@
         <input type="file" style="display: none" ref="fileInput" accept="video/*" @change="onFilePicked"/>
       </div>
     </div>
-    <div class="channel_content">
+    <div class="channel_banner">
       <div class="content">
         <div v-if="channel" class="channel_tabs">
           <router-link :to="`/channel/${channel.id}`" :class="[($route.name === 'Channel Video')? 'channel_tab select':'channel_tab']">
@@ -30,6 +38,10 @@
             About
           </router-link>
         </div>
+      </div>
+    </div>
+    <div class="channel_content">
+      <div class="content">
         <router-view></router-view>
       </div>
     </div>
@@ -46,6 +58,7 @@ export default {
   data() {
     return{
       channel: null,
+      subCount: 0,
     }
   },
   methods: {
@@ -90,19 +103,24 @@ export default {
 }
 
 .channel_banner{
-  width: calc(100% - 20px);
+  width: 100%;
   justify-content: center;
   background: #f9f9f9;
-  margin: 10px;
   display: flex;
+}
+
+.banner_img{
+  width: 100%;
+  height: 160px;
 }
 
 .banner{
   display: flex;
   width: 100%;
-  max-width: 840px;
+  max-width: 960px;
   flex-direction: row;
   justify-content: space-between;
+  padding: 10px;
 }
 
 .banner_info{  
@@ -111,8 +129,8 @@ export default {
   align-items: center;
 }
 .banner_info img{
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50px
 }
 .banner_info label{
@@ -126,9 +144,9 @@ export default {
 }
 
 .banner_button button{
-  margin: 0px 5px;
+  margin-left: 10px;
   font-weight: bold;
-  padding: 5px 20px;
+  padding: 10px 20px;
   text-decoration: 0;
   border: 0;
 }
@@ -155,8 +173,7 @@ export default {
 .content{  
   display: flex;
   width: 100%;
-  max-width: 840px;
-  align-items: center;
+  max-width: 960px;
   flex-direction: column;
 }
 
@@ -167,8 +184,8 @@ export default {
 }
 
 .channel_tab{
-  width: 100%;
-  padding: 10px;
+  width: fit-content;
+  padding: 10px 30px;
   display: block;
   text-align: center;
   color: #666;

@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <div class="display">
+      <label>RECOMMENDED</label>
       <div class="videos-list">
         <div v-for="video in videos" :key="video">
           <video-box :video="video"/>
@@ -38,15 +39,20 @@ export default {
 </script>
 
 <style scoped>
+.display{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.display >label{
+  margin: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #6d6d6d;
+}
 .videos-list{
   display: flex;
   flex-wrap: wrap;
-}
-
-.display{
-  display: flex;
-  justify-content: center;
-  padding: 10px;
+  width: 100%;
 }
 
 /* @media screen and (max-width: 596px) { .videos-list { width: 280px; } } */

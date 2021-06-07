@@ -11,7 +11,7 @@
         <label>{{comment.likes}}</label>
         <label @click="showReplyInput=true">REPLY</label>
       </div>
-      <reply-input v-if="showReplyInput" @close="showReplyInput=false"/>   
+      <reply-input v-if="showReplyInput" :commentId="comment.id" @close="showReplyInput=false" @onSuccessPost="onSuccessPost"/>   
       <div v-if="comment.replyCount>0" class="comment_reply">
         <div v-if="!showReplies"><label @click="getReply">Show {{comment.replyCount}} replies</label></div>
         <div v-else><label @click="showReplies=!showReplies">Hide {{comment.replyCount}} replies</label></div>
@@ -66,6 +66,10 @@ export default {
         this.showReplies = true;
       })
       .catch(err=>console.log(err))
+    },    
+    onSuccessPost(value){
+      this.replies.splice(0,0,value)
+      this.showReplyInput=false
     }
   },
   mounted(){
