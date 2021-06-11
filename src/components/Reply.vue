@@ -7,8 +7,7 @@
       <label>{{author.username}}</label>
       <p>{{reply.content}}</p>
       <div class="reply_react">
-        <button>Like</button>
-        <label>{{reply.likes}}</label>
+        <like-button style="font-size: 14px" :likes="reply.likes" :isLiked="isLiked" @onPress="onLikePress"/>
         <label @click="showReplyInput=false">REPLY</label>
       </div>
       <reply-input v-if="showReplyInput" :parent="reply.id" :commentId="reply.commentId" @close="showReplyInput=false" @onSuccessPost="onSuccessPost"/>
@@ -25,8 +24,9 @@
 import UserService from '../services/UserService'
 import ReplyInput from './ReplyInput.vue'
 import Reply from './Reply.vue'
+import LikeButton from '../components/LikeButton.vue'
 export default {
-  components: { Reply, ReplyInput },
+  components: { Reply, ReplyInput, LikeButton },
   name: 'reply',
   props:{
     reply: Object,
@@ -35,6 +35,7 @@ export default {
     return {
       author: null,
       showReplyInput: false,
+      isLiked: false,
     }
   },
   methods: {
@@ -50,6 +51,10 @@ export default {
     onSuccessPost(value){
       this.reply.childs.splice(0,0,value)
       this.showReplyInput=false
+    },
+    onLikePress(){
+      this.reply.likes += this.isLiked? -1: 1
+      this.isLiked = !this.isLiked
     }
   },
   mounted(){
@@ -71,11 +76,14 @@ export default {
   background: transparent;
   margin-top: 8px;
 }
-
+.reply_content{
+  width: 100%;
+}
 .reply_content > label,
 .reply_content > p{
   margin: 0px 0px 10px 10px;
-  word-wrap: normal;
+  word-wrap: normal;  
+  width: 100%;
 }
 .reply_content > label{
   font-size: 12px;
@@ -88,7 +96,10 @@ export default {
 .reply_react{
   color: #666;  
   margin: 0px 0px 10px 10px;
-  font-size: 14px;
+  font-size: 14px;  
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 .reply_react > label{  
   margin-left: 10px;

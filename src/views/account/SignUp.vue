@@ -1,7 +1,11 @@
 <template>
-  <div class="signin">
+  <div class="signup">
     <form class="form">
-      <h1>SIGN IN</h1>
+      <h1>SIGN UP</h1>
+      <div class="text_field">
+        <input type="text" class="text_input" placeholder=" " v-model="username">
+        <label class="text_label">Username</label>
+      </div>
       <div class="text_field">
         <input type="email" class="text_input" placeholder=" " v-model="email">
         <label class="text_label">Email</label>
@@ -10,39 +14,52 @@
         <input type="password" class="text_input" placeholder=" " v-model="password">
         <label class="text_label">Password</label>
       </div>
-      <div class="forget">Forget password?</div>
-      <button type="submit" @click.stop.prevent="signIn()">Sign In</button>
-      <div class="signup-link">Don't have account? 
-        <router-link to="/signup">Sign up</router-link>
+      <div class="text_field">
+        <input type="password" class="text_input" placeholder=" " v-model="confirm">
+        <label class="text_label">Confirm password</label>
+      </div>
+      <div>
+      <input type="checkbox" class="agreed" v-model="agree"> I agreed to the term of service</div>
+      <button type="submit" @click.stop.prevent="signUp()">Sign Up</button>
+      <div class="signin-link">Already have account? 
+        <router-link :to='{path:"/account/signin", query: {continue: continuePath}}'>Sign in</router-link>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import UserService from '../services/UserService'
+import UserService from '../../services/UserService'
+import SubscriptionService from '../../services/SubscriptionService'
 
 export default {
   name: 'signin',
   data() {
-    return{      
-      loading: false,
+    return {      
+      username: '',
       email: '',
-      password: ''
-    } 
+      password: '',
+      confirm: '',
+      agree: false,
+      loading: false,
+      continuePath: this.$route.query.continue,
+    }
   },
   methods:{
-    async signIn(){
+    signUp(){
       if(this.loading) return
       this.loading = true
 
-      UserService.singIn({ email: this.email, password: this.password })
+      UserService.signUp({ email: this.email, username: this.username, password: this.password })
       .then(res => {
-        if(res.data.message == 'OK'){          
-          this.loading = false
-          alert(res.data.message)
-          this.$store.dispatch('signIn', res.data.data)
-          this.$router.push({ name: 'Home' })
+        if(res.data.message == 'OK'){    
+          SubscriptionService.createSub(res.data.data.id)
+          .then(res =>{
+            this.loading = false
+            alert(res.data.message)
+            this.$store.dispatch('signUp', res.data.data)
+            this.$router.push({ path: this.continuePath })
+          })         
         }
         else{                   
           this.loading = false
@@ -54,19 +71,15 @@ export default {
         alert('Something when wrong')
         this.loading = false
       })
+      // alert(this.email + this.password)
+      // this.$router.push({ name: 'Home' })
     }
   }
 }
 </script>
 
 <style scoped scss>
-
-h1{
-  margin: 0;
-}
-
-/*===== FORM =====*/
-.signin{
+.signup{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,12 +160,11 @@ button:hover{
   cursor: pointer;
 } 
 
-.forget{
-  text-align: end;
+.agreed{
   margin-top: 16px;
 }
 
-.signup-link{
+.signin-link{
   text-align: center;
 }
 </style>

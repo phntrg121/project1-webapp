@@ -1,12 +1,10 @@
 <template>
   <div class="relatedvideo" @click="watch()">
-    <div>
-      <img class="thumbnail" :src="video.thumbnail" alt="video thumbnail" width="120" height="90"/>
-    </div>
+    <img class="thumbnail" :src="video.thumbnail" alt="video thumbnail" width="160" height="120"/>
     <div class="text">
       <label class="title">{{video.title}}</label>
-      <label class="view">{{video.views}} views</label>
       <user-item class="uploader" :uid="video.uploaderId"/>
+      <label class="view">{{video.views}} views</label>
     </div>    
   </div>
 </template>
@@ -51,14 +49,14 @@ export default {
 <style scoped>
 .relatedvideo{
   width: 100%;
-  height: 90px;
   background: transparent;
   display: flex;
-  margin: 10px 0px;
+  flex-direction: row;
+  margin-bottom: 10px;
 }
 
 .text{
-  padding: 10px;
+  margin-left: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;

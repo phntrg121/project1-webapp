@@ -19,21 +19,21 @@
     </div>
     <div class="explore_videos" >
       <div style="margin:none; padding:none; width:80%" v-for="video in videos" :key="video">
-        <video-item :video="video"/>
+        <search-item :video="video"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import VideoItem from '../components/VideoItem.vue'
+import SearchItem from '../components/SearchItem.vue'
 
 import VideoService from '../services/VideoService';
 
 export default {
   name: 'Explore',
   components: {
-    VideoItem
+    SearchItem
   },
   data(){
     return{      

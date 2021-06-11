@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import UserService from '../services/UserService'
-import Upload from '../components/Upload.vue'
+import UserService from '../../services/UserService'
+import Upload from '../../components/Upload.vue'
 
 export default {
   components: { Upload },

@@ -1,32 +1,36 @@
 <template>
-  <div id="subscription">
+  <div v-if="$store.getters.isAuthenticated" id="subscription">
     <div class="subscription_list">
       <div>SUBSCRIPTIONS</div>
       <div v-for="id in subs" :key=id>
-        <user-item :uid="id"/>
+        <subscription-item :uid="id"/>
       </div>
     </div>
     <div class="subscription_videos">
       <div class="video_list">
         <div v-for="video in videos" :key=video>
-          <video-box :video="video"/>
+          <video-item :video="video"/>
         </div>
       </div>
     </div>
   </div>
+  <div v-else class="not_authenticated">
+    <label> Sign in to see your subscriptions</label>
+    <router-link :to='{path:"/account/signin", query: {continue: $route.fullPath}}' class="signin_button" style="text-decoration: none" tag="button">Sign In</router-link>
+  </div>
 </template>
 
 <script>
-import UserItem from '../components/UserItem'
-import VideoBox from '../components/VideoBox'
+import SubscriptionItem from '../components/SubscriptionItem'
+import VideoItem from '../components/VideoItem'
 import SubscriptionService from '../services/SubscriptionService'
 import VideoService from '../services/VideoService'
 
 export default {
   name: 'Subscription',
   components:{
-    UserItem,
-    VideoBox
+    SubscriptionItem,
+    VideoItem
   },
   data(){
     return{
@@ -55,6 +59,7 @@ export default {
     },
   },
   mounted(){
+    if(!this.$store.getters.isAuthenticated) return
     this.getSubscription()
     this.getVideos()
   }
@@ -92,5 +97,26 @@ export default {
 .video_list{
   display: flex;
   flex-wrap: wrap;
+}
+
+
+.not_authenticated{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.not_authenticated label{
+  margin-bottom: 20px;
+}
+
+.signin_button{
+  border: 2px solid blue;
+  padding: 5px 15px;
+  color: blue;
+  font-weight: 400;
+  background: transparent;
 }
 </style>

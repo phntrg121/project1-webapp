@@ -46,8 +46,6 @@ export default {
 }
 .display >label{
   margin: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #6d6d6d;
 }
 .videos-list{
   display: flex;

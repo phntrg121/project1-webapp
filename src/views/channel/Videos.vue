@@ -1,20 +1,21 @@
 <template>
   <div id="channel_video">
+    <label>Uploads</label>
     <div class="videos">
       <div  v-for="video in videos" :key="video">
-        <video-box :video="video"></video-box>
+        <video-item :video="video" :showUploader="false"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import VideoBox from '../../components/VideoBox.vue'
+import VideoItem from '../../components/VideoItem.vue'
 import VideoService from '../../services/VideoService'
 
 export default {
-  name: 'Main',
-  components: { VideoBox },
+  name: 'ChannelVideos',
+  components: { VideoItem },
   data() {
     return {
       videos: [],
@@ -39,11 +40,16 @@ export default {
 
 <style scoped>
 
-.channel_video{  
+#channel_video{  
   width: 100%;
-  background: #f1f1f1;
   display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+#channel_video > label{
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .videos{

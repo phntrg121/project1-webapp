@@ -3,7 +3,7 @@
     <div v-if="$store.getters.isAuthenticated" class="input">      
       <img :src="user.avatar"/>
       <div class="write_comment">
-        <input ref="cmt_input" v-model="commentContent" type="text" placeholder="Add a public comment" @click="type=true"/>
+        <input ref="cmt_input" v-model="commentContent" type="text" placeholder="Add a public comment" @click="typing"/>
         <div v-show="type" class="cmt_btn_group">            
           <button class="comment_cancel" @click="type=false">Cancel</button>
           <button class="comment_send" @click="postComment">Send</button>

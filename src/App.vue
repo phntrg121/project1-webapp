@@ -13,12 +13,16 @@ export default {
 </script>
 
 <style>
-body{
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+html, body{
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Avenir, Helvetica, Arial, sans-serif; */  
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center;
@@ -42,5 +46,9 @@ body{
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #666;
+}
+
+.click-able{
+  cursor: pointer;
 }
 </style>

@@ -5,14 +5,14 @@ import Explore from '../views/Explore.vue'
 import Subscription from '../views/Subscription.vue'
 import NotFound from '../views/NotFound.vue'
 import Watch from '../views/Watch.vue'
-import SignIn from '../views/SignIn.vue'
-import SignUp from '../views/SignUp.vue'
 import Search from '../views/Search.vue'
-import Content from '../views/Content.vue'
+import Playlist from '../views/Playlist.vue'
 
 //other routes
 import channel from './channel'
 import library from './library'
+import content from './content'
+import account from './account'
 
 const routes = [
   {
@@ -42,29 +42,21 @@ const routes = [
         component: Search
       },
       {
-        path: '/content/:id',
-        name: 'Content',
-        component: Content,
+        path: '/playlist',
+        name: 'Playlist',
+        component: Playlist
       },
       library,
       channel,
     ]
-  },
+  },  
   {
     path: '/watch/:id',
     name: 'Watch',
     component: Watch
   },
-  {
-    path: '/signup',
-    name: 'SignUp',
-    component: SignUp
-  },
-  {
-    path: '/signin',
-    name: 'SignIn',
-    component: SignIn
-  },
+  account,
+  content,
   // {
   //   path: '/*',
   //   name: 'NotFound',
