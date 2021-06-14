@@ -23,8 +23,7 @@ export default {
     return {
       channelDetail: {
         description: "No description",
-        createDate: new Date().toLocaleDateString(),
-        totalView: (13325525523).toLocaleString(),
+        createDate: new Date().toLocaleDateString()
       }
     }
   },

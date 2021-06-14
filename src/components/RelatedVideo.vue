@@ -4,7 +4,7 @@
     <div class="text">
       <label class="title">{{video.title}}</label>
       <user-item class="uploader" :uid="video.uploaderId"/>
-      <label class="view">{{video.views}} views</label>
+      <label class="view">{{video.views.toLocaleString()}} views</label>
     </div>    
   </div>
 </template>

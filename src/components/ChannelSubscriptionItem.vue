@@ -2,7 +2,7 @@
   <div v-if="user" class="channel_subscription_item">
     <img :src="user.avatar" class="user_avatar click-able" @click="toChannel">
     <label class="click-able" @click="toChannel">{{user.username}}</label>
-    <button :class="[isSubscribed? 'subscribed':'not_subscribed']">SUBSCRIBE</button>
+    <button :class="[isSubscribed? 'subscribed':'not_subscribed']" @click="subscribe">SUBSCRIBE</button>
   </div>
 </template>
 
@@ -19,6 +19,8 @@ export default {
     return{
       user: null,
       isSubscribed: false,
+
+      processingSubscribe: false,
     }
   },
   methods:{
@@ -39,7 +41,27 @@ export default {
         }
       })
       .catch(err => console.log(err))
-    }
+    },
+    async subscribe(){
+      if(this.processingSubscribe) return
+      if(!this.$store.getters.isAuthenticated){
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
+        return
+      }
+      this.processingSubscribe = true
+      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.user.id })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
+        }
+      })
+      .catch(err => console.log(err))
+    },
   },
   mounted(){
     UserService.getById(this.uid)

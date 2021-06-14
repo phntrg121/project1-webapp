@@ -11,7 +11,7 @@ import Playlist from '../views/Playlist.vue'
 //other routes
 import channel from './channel'
 import library from './library'
-import content from './content'
+import studio from './studio'
 import account from './account'
 
 const routes = [
@@ -56,7 +56,7 @@ const routes = [
     component: Watch
   },
   account,
-  content,
+  studio,
   // {
   //   path: '/*',
   //   name: 'NotFound',

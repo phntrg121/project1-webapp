@@ -85,7 +85,7 @@ export default {
   margin: 0px 20px
 }
 
-.history_filter{  
+.history_filter{
   position:sticky;
   top: 0;
   background-color: #f1f1f1;

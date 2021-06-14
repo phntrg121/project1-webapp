@@ -1,10 +1,13 @@
 <template>
   <div id="channel_subscription">
     <label>Subscriptions</label>
-    <div class="subscriptions">
+    <div v-if="subscriptions.length > 0" class="subscriptions">
       <div  v-for="id in subscriptions" :key="id">
         <channel-subscription-item :uid="id"></channel-subscription-item>
       </div>
+    </div>
+    <div v-else style="display: flex; width: 100%; justify-content: center;">
+      <label>This channel has no subscriptions</label>
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@
     </div>
     <label class="title click-able" @click="watch()">{{video.title}}</label>
     <user-item :uid="video.uploaderId"  class="uploader"/>
-    <label class="view">{{video.views}} views</label>
+    <label class="view">{{video.views.toLocaleString()}} views</label>
   </div>
 </template>
 

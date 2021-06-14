@@ -6,7 +6,7 @@
     <div class="video_info">      
       <label class="click-able" style="margin-top: 10px; font-size: 20px;" @click="watch()">{{video.title}}</label>
       <user-item style="color: #666; margin-bottom: 10px" :uid="video.uploaderId" />
-      <label style="color: #666; font-size: 12px ">{{video.views}} views</label>
+      <label style="color: #666; font-size: 12px ">{{video.views.toLocaleString()}} views</label>
       <p style="color: #666; font-size: 14px; max-width: 100">{{video.description}}</p>
     </div>
   </div>

@@ -51,15 +51,15 @@ export default {
       this.loading = true
 
       UserService.signUp({ email: this.email, username: this.username, password: this.password })
-      .then(res => {
+      .then(async function(res) {
         if(res.data.message == 'OK'){    
-          SubscriptionService.createSub(res.data.data.id)
-          .then(res =>{
-            this.loading = false
-            alert(res.data.message)
-            this.$store.dispatch('signUp', res.data.data)
-            this.$router.push({ path: this.continuePath })
-          })         
+          await SubscriptionService.createSub(res.data.data.id)
+          await PlaylistService.createWL(res.data.data.id)
+          await UserService.createChannel(res.data.data.id)
+          this.loading = false          
+          alert(res.data.message)          
+          this.$store.dispatch('signUp', res.data.data)
+          this.$router.push({ path: this.continuePath })
         }
         else{                   
           this.loading = false
@@ -71,9 +71,7 @@ export default {
         alert('Something when wrong')
         this.loading = false
       })
-      // alert(this.email + this.password)
-      // this.$router.push({ name: 'Home' })
-    }
+    },
   }
 }
 </script>

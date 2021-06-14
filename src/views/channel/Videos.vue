@@ -1,10 +1,13 @@
 <template>
   <div id="channel_video">
     <label>Uploads</label>
-    <div class="videos">
+    <div v-if="videos.length > 0" class="videos">
       <div  v-for="video in videos" :key="video">
         <video-item :video="video" :showUploader="false"/>
       </div>
+    </div>
+    <div v-else style="display: flex; width: 100%; justify-content: center;">
+      <label>This channel has no videos</label>
     </div>
   </div>
 </template>

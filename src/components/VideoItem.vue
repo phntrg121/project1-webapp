@@ -5,7 +5,7 @@
     </div>
     <label class="title click-able" @click="watch()">{{video.title}}</label>
     <user-item v-if="showUploader" style="color: #666; margin-bottom: 10px" :uid="video.uploaderId" />
-    <label class="view">{{video.views}} views</label>
+    <label class="view">{{video.views.toLocaleString()}} views</label>
   </div>
 </template>
 

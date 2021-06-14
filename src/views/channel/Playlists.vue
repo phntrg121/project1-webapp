@@ -1,56 +1,37 @@
 <template>
   <div id="channel_playlist">
     <label>Created playlists</label>
-    <div class="playlists">
-      <div  v-for="list in playlists" :key="list">
+    <div v-if="playlists.length > 0" class="playlists">
+      <div v-for="list in playlists" :key="list">
         <playlist-item :list="list" :showUploader="false"/>
       </div>
+    </div>
+    <div v-else style="display: flex; width: 100%; justify-content: center;">
+      <label>This channel has no playlists</label>
     </div>
   </div>
 </template>
 
 <script>
 import PlaylistItem from '../../components/PlaylistItem.vue'
+import PlaylistService from '../../services/PlaylistService'
 
 export default {
   name: 'ChannelPlaylists',
   components: { PlaylistItem },
   data(){
     return {
-      playlists: [
-        {
-          id: "sh2Dsj2IsLL",
-          owner: "60bc42a19a58c82ef8a56a22",
-          name: "Play01",
-          cover: "https://wallpapercave.com/wp/G4qMVSo.jpg",
-          videoCount: 7,
-        },
-        {
-          id: "sh2Dsj2IsLL",
-          owner: "60bc42a19a58c82ef8a56a22",
-          name: "Play02",
-          cover: "https://wallpapercave.com/wp/G4qMVSo.jpg",
-          videoCount: 7,
-        },
-        {
-          id: "sh2Dsj2IsLL",
-          owner: "60bc42a19a58c82ef8a56a22",
-          name: "Play03",
-          cover: "https://wallpapercave.com/wp/G4qMVSo.jpg",
-          videoCount: 7,
-        },
-        {
-          id: "sh2Dsj2IsLL",
-          owner: "60bc42a19a58c82ef8a56a22",
-          name: "Play04",
-          cover: "https://wallpapercave.com/wp/G4qMVSo.jpg",
-          videoCount: 7,
-        },
-      ],
+      playlists: [],
     }
   },
   methods: {    
     async getCreatedPlaylist(){
+      PlaylistService.getPlaylistFromUser(this.$route.params.id)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.playlists = res.data.data
+        }
+      })
     },
   },
   mounted(){

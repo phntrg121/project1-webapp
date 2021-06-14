@@ -1,5 +1,5 @@
 <template>
-  <div id="playlist_video_item">      
+  <div v-if="video" id="playlist_video_item">      
     <div class="head">
       <label>{{index + 1}}</label>
     </div>
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import VideoService from '../services/VideoService'
 import UserItem from './UserItem.vue'
 
 export default {
@@ -23,8 +24,13 @@ export default {
     UserItem
   },
   props:{
-    video: Object,
+    videoId: String,
     index: Number,
+  },
+  data(){
+    return {
+      video: null,
+    }
   },
   methods:{
     watch(){
@@ -32,7 +38,13 @@ export default {
         name: 'Watch',
         params: { id: this.video.id } 
       })
+    },
+    async getVideo(){
+      this.video = (await VideoService.getVideo(this.videoId)).data.data
     }
+  },
+  mounted(){
+    this.getVideo()
   }
 }
 </script>

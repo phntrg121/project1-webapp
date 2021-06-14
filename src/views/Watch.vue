@@ -12,7 +12,7 @@
           </div>
           <label class="title">{{ video.title }}</label>
           <div class="view_like">
-            <label>{{video.views}} views</label>
+            <label>{{video.views.toLocaleString()}} views</label>
             <like-button style="font-size: 16px" :likes="video.likes" :isLiked="isLiked" @onPress="onLikePress"/>
           </div>
         </div>        
@@ -22,7 +22,7 @@
               <img :src="uploader.avatar" alt="">
               <div>
                 <label class="uploader_name">{{uploader.username}}</label>
-                <label class="uploader_sub">{{sub.subscriberCount}} subscribers</label>
+                <label class="uploader_sub">{{sub.subscriberCount.toLocaleString()}} subscribers</label>
               </div>
             </div>
             <button v-show="!owned" :class="[isSubscribed? 'video_subscribe subscribed':'video_subscribe not_subscribed']" @click="subscribe">SUBSCRIBE</button>
@@ -82,6 +82,8 @@ export default {
       comments: [],
       isLiked: false,
       isPlayed: false,
+
+      processingSubscribe: false,
     }
   },
   methods: {
@@ -152,14 +154,21 @@ export default {
       .catch(err => console.log(err))
     },
     async subscribe(){
+      if(this.processingSubscribe) return
       if(!this.$store.getters.isAuthenticated){
-        this.$router.push({ name: 'SignIn' })
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
         return
       }
+      this.processingSubscribe = true
       SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.video.uploaderId })
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
         }
       })
       .catch(err => console.log(err))

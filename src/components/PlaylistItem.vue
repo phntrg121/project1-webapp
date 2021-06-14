@@ -7,14 +7,18 @@
       </div>
     </div>
     <label class="title click-able" @click="watch()">{{list.name}}</label>
-    <user-item v-if="showUploader" style="color: #666; margin-bottom: 10px" :uid="list.owner" />
+    <user-item v-if="showUploader" style="color: #666; margin-bottom: 10px" :uid="list.creator" />
     <label class="view click-able" @click="toPlaylist()">VIEW FULL PLAYLIST</label>
   </div>
 </template>
 
 <script>
+import UserItem from './UserItem.vue'
 export default {
   name: 'PlaylistItem',
+  components:{
+    UserItem
+  },
   props: {    
     list: Object,
     showUploader: {

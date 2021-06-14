@@ -1,5 +1,5 @@
 <template>
-  <div id="playlist">
+  <div v-if="playlist && creator" id="playlist">
     <div class="playlist_info">
       <div class="playlist_cover click-able">
         <img :src="playlist.cover" alt="playlist cover">
@@ -8,29 +8,35 @@
         </div>
       </div>
       <label class="playlist_name">{{playlist.name}}</label>
-      <label class="playlist_sub">{{playlist.videos.length}} videos</label>
+      <label class="playlist_sub">{{playlist.videoCount}} videos</label>
       <div class="playlist_button">
         <button>Add</button>
       </div>
       <div class="playlist_owner">
         <div class="owner_info">
-          <img class="click-able" :src="owner.avatar" alt="owner avatar">
-          <label class="click-able">{{owner.username}}</label>
+          <img class="click-able" :src="creator.avatar" alt="owner avatar">
+          <label class="click-able">{{creator.username}}</label>
         </div>
-        <button :class="[(true)?'not_subscribed click-able':'subscribed click-able']">SUBSCRIBE</button>
+        <button v-if="!isOwned" :class="[(!isSubscribed)?'not_subscribed click-able':'subscribed click-able']" @click="subscribe">SUBSCRIBE</button>
       </div>
 
     </div>
     <div class="playlist_list">
-      <div v-for="(video, index) in playlist.videos" :key="video">
-        <playlist-video-item :index="index" :video="video"/>
+      <div v-for="(id, index) in playlist.videos" :key="id">
+        <playlist-video-item :index="index" :videoId="id"/>
       </div>
     </div>
+  </div>
+  <div v-else>
   </div>
 </template>
 
 <script>
 import PlaylistVideoItem from '../components/PlaylistVideoItem.vue'
+import PlaylistService from '../services/PlaylistService'
+import SubscriptionService from '../services/SubscriptionService'
+import UserService from '../services/UserService'
+
 export default {
   name: 'Playlist',
   components:{
@@ -38,43 +44,70 @@ export default {
   },
   data(){
     return{
-      playlist: {
-        id: "123456",
-        name: "pLaYlIsT nAmE",
-        cover: "https://wallpapercave.com/wp/G4qMVSo.jpg",
-        videos: [
-          {
-            title:"Rain motherfcker",
-            thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-            uploaderId: "60bc42a19a58c82ef8a56a22"
-          },
-          {
-            title:"Rain motherfcker",
-            thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-            uploaderId: "60bc42a19a58c82ef8a56a22"
-          },
-          {
-            title:"Rain motherfcker",
-            thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-            uploaderId: "60bc42a19a58c82ef8a56a22"
-          },
-          {
-            title:"Rain motherfcker",
-            thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-            uploaderId: "60bc42a19a58c82ef8a56a22"
-          },
-          {
-            title:"Rain motherfcker",
-            thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-            uploaderId: "60bc42a19a58c82ef8a56a22"
-          },
-        ],
-      },
-      owner: {
-        username: "ABC",
-        avatar: "https://yt3.ggpht.com/-7zFDHK5X45w/AAAAAAAAAAI/AAAAAAAAAAA/QJfHeLTEZwE/s900-c-k-no-mo-rj-c0xffffff/photo.jpg"
-      }
+      playlist: null,
+      creator: null,
+      isSubscribed: false,
+      isOwned: false,
+
+      processingSubscribe: false,
     }
+  },
+  methods: {
+    async getPlaylist(listId){
+      PlaylistService.getPlaylist(listId)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.playlist = res.data.data
+          this.getCreator()
+          this.checkSub()
+        }
+      })
+      .catch(err=>console.log(err))
+    },
+    async getWL(uid){
+      console.log(uid)
+      PlaylistService.getWL(uid)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.playlist = res.data.data
+          this.creator = this.$store.getters.currentUser
+          this.checkSub()
+        }
+      })
+      .catch(err=>console.log(err))
+    },
+    async getCreator(){
+      this.creator = (await UserService.getById(this.playlist.creator)).data.data
+    },
+    async checkSub(){
+      this.isOwned = !this.$store.getters.isAuthenticated ? false: this.playlist.creator.id == this.$store.getters.currentUser.id
+      this.isSubscribed = !this.$store.getters.isAuthenticated ? false : (await SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.playlist.creator })).data.data
+    },
+    async subscribe(){
+      if(this.processingSubscribe) return
+      if(!this.$store.getters.isAuthenticated){
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
+        return
+      }
+      this.processingSubscribe = true
+      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.playlist.creator })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
+        }
+      })
+      .catch(err => console.log(err))
+    }
+  },
+  mounted(){
+    if(this.$route.query.list != "WL" && this.$route.query.list != "LL") this.getPlaylist(this.$route.query.list)
+    else if(this.$store.getters.isAuthenticated && this.$route.query.list == "WL") this.getWL(this.$store.getters.currentUser.id)
+    
   }
 }
 </script>

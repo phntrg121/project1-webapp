@@ -11,7 +11,7 @@
           <img width="120" height="120" :src="channel.avatar" alt="user image">
           <div style="display:flex;flex-direction:column">
             <label style="font-size:20px">{{channel.username}}</label>
-            <label v-if="sub" style="font-size:14px;color:#666">{{sub.subscriberCount}} subscribers</label>          
+            <label v-if="sub" style="font-size:14px;color:#666">{{sub.subscriberCount.toLocaleString()}} subscribers</label>          
           </div>
         </div>        
         <div class="banner_button">
@@ -61,6 +61,8 @@ export default {
       channel: null,
       sub: null,
       isSubscribed: false,
+
+      processingSubscribe: false,
     }
   },
   methods: {
@@ -69,15 +71,9 @@ export default {
       if(!this.$store.getters.isAuthenticated) return false
       return this.channel.id==this.$store.getters.currentUser.id
     },
-    toUpload(){
-      this.$router.push({
-        path:`/content/${this.$store.getters.currentUser.id}/`,
-        params: { upload: true},
-      })
-    },
     toContent(){
       this.$router.push({
-        path:`/content/${this.$store.getters.currentUser.id}`,
+        path:`/studio/${this.$store.getters.currentUser.id}`,
       })
     },
     async getChannelInfo(){
@@ -114,18 +110,25 @@ export default {
       .catch(err => console.log(err))
     },
     async subscribe(){
+      if(this.processingSubscribe) return
       if(!this.$store.getters.isAuthenticated){
-        this.$router.push({ name: 'SignIn' })
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
         return
       }
+      this.processingSubscribe = true
       SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.channel.id })
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
         }
       })
       .catch(err => console.log(err))
-    }, 
+    },
   },
   mounted(){
     this.getChannelInfo()

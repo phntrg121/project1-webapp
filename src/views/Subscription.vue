@@ -1,8 +1,8 @@
 <template>
   <div v-if="$store.getters.isAuthenticated" id="subscription">
-    <div class="subscription_list">
-      <div>SUBSCRIPTIONS</div>
-      <div v-for="id in subs" :key=id>
+    <div v-if="subscription" class="subscription_list">
+      <div>SUBSCRIPTIONS<span style="color: #666; margin-left: 10px">{{subscription.subscriptionCount}}</span></div>
+      <div v-for="id in subscription.subscriptions" :key=id>
         <subscription-item :uid="id"/>
       </div>
     </div>
@@ -34,7 +34,7 @@ export default {
   },
   data(){
     return{
-      subs: [],
+      subscription: null,
       videos: [],
     }
   },
@@ -43,7 +43,7 @@ export default {
       SubscriptionService.getSubscription(this.$store.getters.currentUser.id)
       .then(res => {
         if(res.data.message == "OK"){
-          this.subs = res.data.data.subscriptions
+          this.subscription = res.data.data
         }
       })
       .catch(err => console.log(err))
