@@ -16,7 +16,6 @@ export default {
     return axios.get(process.env.VUE_APP_API_URL + '/videos/upload/channel=' + id)
   },
   async upload(video, thumbnail, info){
-
     const ref = storage.ref()
     // //upload thumbnail
     // ref.child(`images/${info.uploaderId}/${new Date().getTime() + '-' +file.name}`).put(file)
@@ -39,9 +38,7 @@ export default {
     //upload video
     let video_snap = await ref.child(`videos/${info.uploaderId}/${new Date().getTime() + '-' + info.title}`).put(video)
     info.videoURL = await video_snap.ref.getDownloadURL()
-
-    console.log(info)
-
+    
     return axios.post(process.env.VUE_APP_API_URL + '/videos/upload', info)
   }
 }

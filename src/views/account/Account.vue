@@ -1,13 +1,12 @@
 <template>
-  <div id="liked">
-    Liked Videos
+  <div id="account">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Liked',
+  name: 'Account',
 }
 </script>
 

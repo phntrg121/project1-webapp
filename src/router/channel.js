@@ -1,7 +1,7 @@
 import Channel from '../views/channel/Channel.vue'
 import Videos from '../views/channel/Videos.vue'
-import Likes from '../views/channel/Likes.vue'
-import Subscribers from '../views/channel/Subscribers.vue'
+import Playlists from '../views/channel/Playlists.vue'
+import Subscriptions from '../views/channel/Subscriptions.vue'
 import About from '../views/channel/About.vue'
 
 const channel = {        
@@ -15,14 +15,14 @@ const channel = {
       component: Videos
     },
     {
-      path: '/channel/:id/likes',
-      name: 'Channel Like',
-      component: Likes
+      path: '/channel/:id/playlists',
+      name: 'Channel Playlist',
+      component: Playlists
     },
     {
-      path: '/channel/:id/subscribers',
-      name: 'Channel Subscriber',
-      component: Subscribers
+      path: '/channel/:id/subscriptions',
+      name: 'Channel Subscription',
+      component: Subscriptions
     },
     {
       path: '/channel/:id/about',

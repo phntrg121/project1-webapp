@@ -9,8 +9,8 @@
 
           <div v-show="video" class="modal_body">
             <div class="preview">
-              <video ref="uploadVideo" controls></video>
-              <canvas style="display:none" ref="uploadThumbnail"/>
+              <video ref="uploadVideo" controls autoplay></video>
+              <canvas style="position:absolute;display:none" ref="uploadThumbnail"/>
             </div>
             <label style="margin-top: 10px">Title</label>
             <input v-model="title" type="text" style="margin-: 10px">
@@ -47,6 +47,7 @@ export default {
   name: 'Main',
   data(){
     return {
+      uploading: false,
       video: null,
       thumbnail: null,
       title: '',
@@ -72,19 +73,32 @@ export default {
       let vd = this.$refs.uploadVideo
       vd.setAttribute('src',URL.createObjectURL(this.video))
       vd.load()
-
-      //generate thumbnail
+    },
+    canvasToBlob(canvas) {
+      return new Promise(function(resolve) {
+        canvas.toBlob(resolve);
+      })
+    },
+    async generateThumbnail(){      
+      let vd = this.$refs.uploadVideo
+      vd.currentTime = 1
       let cv = this.$refs.uploadThumbnail
+      cv.setAttribute('width', vd.videoWidth)
+      cv.setAttribute('height', vd.videoHeight)
       let ctx = cv.getContext("2d")
-      vd.currentTime = 3
       ctx.drawImage(vd, 0, 0, vd.videoWidth, vd.videoHeight)
-      cv.toBlob((blob) => {
-        this.thumbnail = new File([blob], `${file.name}.jpg`, { type: "image/jpeg" })
-      }, 'image/jpeg', 0.8)
+      let blob = await this.canvasToBlob(cv)
+      this.thumbnail = new File([blob], `${this.title}.jpg`, { type: "image/jpeg" })
+      // cv.toBlob((blob) => {
+      //   this.thumbnail = new File([blob], `${this.title}.jpg`, { type: "image/jpeg" })
+      // }, 'image/jpeg', 0.8)
     },
     async upload(){
+      if(this.uploading) return
+      await this.generateThumbnail()
       if(!this.video||!this.thumbnail) return
       if(!this.$store.getters.isAuthenticated) return
+      this.uploading = true
       VideoService.upload(this.video, this.thumbnail, {
         title: this.title,
         thumbnail: "",
@@ -96,6 +110,7 @@ export default {
       .then(res=>{
         if(res.data.message="OK"){
           alert("Upload Success")
+          this.uploading = false
           this.closeModal()
         }
       })
@@ -107,7 +122,7 @@ export default {
 
 <style scoped>
 .modal_overlay{
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -167,10 +182,13 @@ export default {
 .preview{
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 
 .preview video{
   margin: 10px;
+  width: 100%;
+  height: 100%;
   max-width: 400px;
   max-height: 300px;
 }

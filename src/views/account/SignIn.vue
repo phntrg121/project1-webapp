@@ -13,14 +13,14 @@
       <div class="forget">Forget password?</div>
       <button type="submit" @click.stop.prevent="signIn()">Sign In</button>
       <div class="signup-link">Don't have account? 
-        <router-link to="/signup">Sign up</router-link>
+        <router-link :to='{path:"/account/signup", query: {continue: continuePath}}'>Sign up</router-link>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import UserService from '../services/UserService'
+import UserService from '../../services/UserService'
 
 export default {
   name: 'signin',
@@ -28,7 +28,8 @@ export default {
     return{      
       loading: false,
       email: '',
-      password: ''
+      password: '',
+      continuePath: this.$route.query.continue,
     } 
   },
   methods:{
@@ -42,7 +43,7 @@ export default {
           this.loading = false
           alert(res.data.message)
           this.$store.dispatch('signIn', res.data.data)
-          this.$router.push({ name: 'Home' })
+          this.$router.push({ path: this.continuePath })
         }
         else{                   
           this.loading = false

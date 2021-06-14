@@ -9,19 +9,19 @@
     <div class="search_result">
       <div style="margin: 10px;">Results for:<span style="font-weight: bold">{{text}}</span></div>
       <div v-for="video in results" :key="video">
-        <video-item :video="video"/>
+        <search-item :video="video"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import VideoItem from '../components/VideoItem.vue'
+import SearchItem from '../components/SearchItem.vue'
 
 export default {
   name: 'Search',
   components: {
-    VideoItem
+    SearchItem
   },
   data(){
     return{

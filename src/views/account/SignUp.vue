@@ -22,15 +22,15 @@
       <input type="checkbox" class="agreed" v-model="agree"> I agreed to the term of service</div>
       <button type="submit" @click.stop.prevent="signUp()">Sign Up</button>
       <div class="signin-link">Already have account? 
-        <router-link to="/signin">Sign in</router-link>
+        <router-link :to='{path:"/account/signin", query: {continue: continuePath}}'>Sign in</router-link>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import UserService from '../services/UserService'
-import SubscriptionService from '../services/SubscriptionService'
+import UserService from '../../services/UserService'
+import SubscriptionService from '../../services/SubscriptionService'
 
 export default {
   name: 'signin',
@@ -41,7 +41,8 @@ export default {
       password: '',
       confirm: '',
       agree: false,
-      loading: false
+      loading: false,
+      continuePath: this.$route.query.continue,
     }
   },
   methods:{
@@ -50,15 +51,15 @@ export default {
       this.loading = true
 
       UserService.signUp({ email: this.email, username: this.username, password: this.password })
-      .then(res => {
+      .then(async function(res) {
         if(res.data.message == 'OK'){    
-          SubscriptionService.createSub(res.data.data.id)
-          .then(res =>{
-            this.loading = false
-            alert(res.data.message)
-            this.$store.dispatch('signUp', res.data.data)
-            this.$router.push({ name: 'Home' })
-          })         
+          await SubscriptionService.createSub(res.data.data.id)
+          await PlaylistService.createWL(res.data.data.id)
+          await UserService.createChannel(res.data.data.id)
+          this.loading = false          
+          alert(res.data.message)          
+          this.$store.dispatch('signUp', res.data.data)
+          this.$router.push({ path: this.continuePath })
         }
         else{                   
           this.loading = false
@@ -70,9 +71,7 @@ export default {
         alert('Something when wrong')
         this.loading = false
       })
-      // alert(this.email + this.password)
-      // this.$router.push({ name: 'Home' })
-    }
+    },
   }
 }
 </script>

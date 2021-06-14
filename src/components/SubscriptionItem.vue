@@ -1,5 +1,5 @@
 <template>
-  <div class="user_item">
+  <div class="subscription_item">
     <div v-if="user" class="user_display">
       <img :src="user.avatar" class="user_avatar click-able" @click="toChannel">
       <label class="click-able" @click="toChannel">{{user.username}}</label>
@@ -11,7 +11,7 @@
 import UserService from '../services/UserService'
 
 export default {
-  name: 'UserItem',
+  name: 'SubscriptionItem',
   props:{
     uid: String
   },
@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style scoped>
-.user_item{
+.subscription_item{
   display: block;
 }
 
@@ -51,13 +51,13 @@ export default {
 }
 
 .user_display img{
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
 }
 
 .user_display label{
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 10px;
 }
 </style>
