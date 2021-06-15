@@ -2,23 +2,17 @@
   <div id="navbar">
     <div class="nav_start">      
       <div class="head click-able">
-        <div>
-          <svg style="width: 24px; height: 24px;">
-            <g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g>
-          </svg>
-        </div>
+        <svg style="width: 24px; height: 24px;"><g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g></svg>
       </div>
-      <router-link to="/">
-        <div class="lead_text">METUBE</div>
+      <router-link to="/" class="lead_text">
+        <div>VEEDEO</div>
       </router-link>
     </div>
 
     <div class="nav_center">        
       <input type="search" class="search_text" v-model="searchText" placeholder="Search...">
       <button type="submit" class="search_button click-able" @click="search()">
-        <svg focusable="false">
-          <g><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></g>
-        </svg>
+        <svg focusable="false"><g><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></g></svg>
       </button>
     </div>
 
@@ -26,35 +20,24 @@
       <div v-if="!$store.getters.isAuthenticated">
         <router-link :to='{path:"/account/signin", query: {continue: $route.fullPath}}' class="signin_button click-able" style="text-decoration: none" tag="button">Sign In</router-link>
       </div>
-      <div v-else>
+      <div v-else class="tail">
         <img :src="$store.getters.currentUser.avatar" @click="showMenu()" class="profile_pic click-able">
         <div class="dropdown_menu" v-if="dropDown">
           <div class="dropdown_menu_item click-able" @click="toChannel()">
-            <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon">
-              <g class="menu_icon">
-                <path d="M18.4 5.6v12.8H5.6V5.6h12.8zm0-1.8H5.6a1.8 1.8 0 0 0-1.8 1.8v12.8a1.8 1.8 0 0 0 1.8 1.9h12.8a1.8 1.8 0 0 0 1.9-1.9V5.6a1.8 1.8 0 0 0-1.9-1.8z" class="menu_icon"></path>
-                <path d="M10.2 9v6.5l5-3.2-5-3.2z" class="menu_icon"></path>
-                </g>
-              </svg>           
+            <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon"><g class="menu_icon"><path d="M18.4 5.6v12.8H5.6V5.6h12.8zm0-1.8H5.6a1.8 1.8 0 0 0-1.8 1.8v12.8a1.8 1.8 0 0 0 1.8 1.9h12.8a1.8 1.8 0 0 0 1.9-1.9V5.6a1.8 1.8 0 0 0-1.9-1.8z" class="menu_icon"></path><path d="M10.2 9v6.5l5-3.2-5-3.2z" class="menu_icon"></path></g></svg>           
             <label>My Channel</label>
           </div>
-          <!-- <div class="dropdown_menu_item" @click="goLibrary()">
-            <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon">
-              <g class="menu_icon">
-                <path d="M18.7 8.7H5.3V7h13.4v1.7zm-1.7-5H7v1.6h10V3.7zm3.3 8.3v6.7c0 1-.7 1.6-1.6 1.6H5.3c-1 0-1.6-.7-1.6-1.6V12c0-1 .7-1.7 1.6-1.7h13.4c1 0 1.6.8 1.6 1.7zm-5 3.3l-5-2.7V18l5-2.7z" class="style-scope yt-icon"></path>
-              </g>
-            </svg>          
-            <label>My Library</label>
-          </div> -->
           <hr>
           <div class="dropdown_menu_item click-able" @click="signOut()">
-            <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon">
-              <g class="menu_icon">
-                <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" class="menu_icon"></path>
-              </g>
-            </svg>             
+            <svg width="24px" height="24px" viewBox="0 0 24 24" class="menu_icon"><g class="menu_icon"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" class="menu_icon"></path></g></svg>             
             <label>Sign Out</label>
           </div>
+        </div>
+        <div class="notification_button click-able">
+          <svg viewBox="0 0 24 24" focusable="false" style="width: 24px; height: 24px;"><g class="style-scope yt-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path></g></svg>
+        </div>
+        <div class="upload_button click-able" @click="$router.push({path: `/studio/${$store.getters.currentUser.id}/content`,query: {upload: true}})">
+          <svg viewBox="0 0 24 24" focusable="false" style="width: 24px; height: 24px;"><g class="style-scope yt-icon"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"></path></g></svg>
         </div>
       </div>
     </div>
@@ -100,6 +83,7 @@ export default {
     signOut(){
       this.$store.dispatch('signOut')
       this.closeMenu()
+      this.$emit('onSignOut')
     },
   },
 }
@@ -112,7 +96,9 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  background: white;  
+  background: white;
+  width: calc(100% - 20px);
+  height: fit-content;
 }
 #navbar .nav_start{
   background: transparent;
@@ -125,20 +111,16 @@ export default {
   height: 40px;
   display: flex;
   justify-content: center;
-  vertical-align: middle;
-}
-
-.head div{
-  background: transparent;
-  border: 0;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  border: 0;  
+  background: transparent;
 }
 
 .lead_text{
   font-weight: bold;
   padding: 10px;
+  text-decoration: 0;
+  color: #1a1a1a;
 }
 
 #navbar .nav_center{
@@ -189,6 +171,21 @@ export default {
 #navbar .nav_end{
   background: transparent;
   width: fit-content;
+}
+
+.tail{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.notification_button,
+.upload_button{
+  width: 48px;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  fill: #666;
 }
 
 .profile_pic {

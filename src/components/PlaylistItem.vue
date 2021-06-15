@@ -7,7 +7,7 @@
       </div>
     </div>
     <label class="title click-able" @click="watch()">{{list.name}}</label>
-    <user-item v-if="showUploader" style="color: #666; margin-bottom: 10px" :uid="list.creator" />
+    <user-item v-if="showUploader" style="color: #666; margin-bottom: 5px" :uid="list.creator" />
     <label class="view click-able" @click="toPlaylist()">VIEW FULL PLAYLIST</label>
   </div>
 </template>
@@ -56,7 +56,7 @@ export default {
 .cover{
   max-width: 210px;
   max-height: 118px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   position: relative;
 }
 .cover img{
@@ -83,14 +83,15 @@ export default {
 
 .title{
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
   width: 100%;
 }
 
 .view{
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   color: #666;
 }

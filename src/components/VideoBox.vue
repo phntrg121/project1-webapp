@@ -42,7 +42,7 @@ export default {
 .thumbnail{
   max-width: 320px;
   max-height: 180px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .thumbnail img{
   zoom: 2;
@@ -52,17 +52,18 @@ export default {
 }
 
 .video_box label{
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
 }
 
 .title{
-  font-size: 20px
+  font-weight: bold;
+  font-size: 18px
 }
 
 .uploader{
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
 }
 

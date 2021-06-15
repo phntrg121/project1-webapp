@@ -4,7 +4,7 @@
       <img :src="video.thumbnail" alt="video thumbnail">
     </div>
     <label class="title click-able" @click="watch()">{{video.title}}</label>
-    <user-item v-if="showUploader" style="color: #666; margin-bottom: 10px" :uid="video.uploaderId" />
+    <user-item v-if="showUploader" style="color: #666; margin-bottom: 5px" :uid="video.uploaderId" />
     <label class="view">{{video.views.toLocaleString()}} views</label>
   </div>
 </template>
@@ -48,7 +48,7 @@ export default {
 .thumbnail{
   max-width: 210px;
   max-height: 118px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .thumbnail img{
   width: 100%;
@@ -57,16 +57,17 @@ export default {
 }
 
 .video_item label{
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
 }
 
 .title{
+  font-weight: bold;
   font-size: 16px
 }
 
 .view{
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
 }
 </style>
