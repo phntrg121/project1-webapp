@@ -2,14 +2,13 @@ import axios from 'axios'
 import { storage } from './firebase'
 
 export default {
-  getVideoPage(pageNum){
-    let page = pageNum == 1 ? '': `/page=${pageNum}`
-    return axios.get(process.env.VUE_APP_API_URL + '/videos/video' + page)
+  getVideos(){
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/video')
   },
-  getVideo(id){
+  getVideoById(id){
     return axios.get(process.env.VUE_APP_API_URL + '/videos/video/' + id)
   },
-  getRelatedVideo(tags){
+  getRelatedVideos(tags){
     return axios.post(process.env.VUE_APP_API_URL + '/videos/video/related', tags)
   },
   getUploadVideo(id){    
@@ -40,5 +39,8 @@ export default {
     info.videoURL = await video_snap.ref.getDownloadURL()
     
     return axios.post(process.env.VUE_APP_API_URL + '/videos/upload', info)
+  },
+  search(query){    
+    return axios.post(process.env.VUE_APP_API_URL + '/videos/video/search', query)
   }
 }

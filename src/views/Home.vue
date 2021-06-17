@@ -27,7 +27,7 @@ export default {
     }
   },
   mounted() {
-    VideoService.getVideoPage(1)
+    VideoService.getVideos()
     .then(res => {      
       if(res.data.message == "OK"){
         this.videos = res.data.data

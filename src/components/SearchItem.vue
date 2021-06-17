@@ -38,7 +38,6 @@ export default {
 #search_item{
   display: flex;
   flex-direction: row;
-  padding: 10px;
   margin-bottom: 10px;
 }
 .video_thumbnail{

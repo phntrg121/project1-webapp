@@ -33,6 +33,7 @@ export default {
 }
 .head label{
   font-size: 20px;
+  font-weight: bold;
 }
 .head button{
   border: 0;

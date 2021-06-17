@@ -31,6 +31,7 @@
 <script>
 import UserService from '../../services/UserService'
 import SubscriptionService from '../../services/SubscriptionService'
+import PlaylistService from '../../services/PlaylistService'
 
 export default {
   name: 'signin',
@@ -46,31 +47,34 @@ export default {
     }
   },
   methods:{
-    signUp(){
+    async signUp(){
       if(this.loading) return
       this.loading = true
 
-      UserService.signUp({ email: this.email, username: this.username, password: this.password })
-      .then(async function(res) {
-        if(res.data.message == 'OK'){    
-          await SubscriptionService.createSub(res.data.data.id)
-          await PlaylistService.createWL(res.data.data.id)
-          await UserService.createChannel(res.data.data.id)
-          this.loading = false          
-          alert(res.data.message)          
-          this.$store.dispatch('signUp', res.data.data)
+      try{
+        let response = UserService.signUp({ email: this.email, username: this.username, password: this.password })
+        if(response.message != "OK"){
+          alert(response.message)
+        }
+        else{
+          let user = response.data
+          await SubscriptionService.createSub(user.id)
+          await PlaylistService.createWL(user.id)
+          await UserService.createChannel(user.id)          
+          this.$store.dispatch('signUp', user)
+          let channel = (await UserService.createChannel(this.$store.getters.currentUser.id)).data.data
+          this.$store.dispatch('setChannel', channel)
+          alert(response.message)
           this.$router.push({ path: this.continuePath })
         }
-        else{                   
-          this.loading = false
-          alert(res.data.message)
-        }
-      })
-      .catch((err)=>{
+      }
+      catch(err){
         console.log(err)
         alert('Something when wrong')
+      }
+      finally{
         this.loading = false
-      })
+      }
     },
   }
 }

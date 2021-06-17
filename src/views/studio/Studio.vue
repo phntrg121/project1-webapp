@@ -10,7 +10,7 @@
           <label class="click-able" @click="$router.push({path: `/channel/${$store.getters.currentUser.id}`})">{{$store.getters.currentUser.username}}</label>
         </div>
         <div class="side_middle">
-          <router-link :class="[($route.name === 'Studio') ? 'option select' : 'option']" :to="`/studio/${$store.getters.currentUser.id}`">
+          <router-link :class="[($route.name === 'Studio Dashboard') ? 'option select' : 'option']" :to="`/studio/${$store.getters.currentUser.id}`">
             <svg viewBox="0 0 24 24" focusable="false"><g><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"></path></g></svg>
             <label class="click-able">Dashboard</label>
           </router-link>
@@ -36,8 +36,7 @@
             <svg viewBox="0 0 24 24" focusable="false"><g><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"></path></g></svg>
             <label class="click-able">Feedback</label></div>
         </div>
-      </div>
-      
+      </div>      
       <div class="scroll">
         <router-view></router-view>
       </div>
@@ -98,7 +97,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100%
+  height: calc(100% - 60px)
 }
 
 .side{
@@ -171,7 +170,6 @@ export default {
 
 .scroll{
   width: 100%;
-  height: 100%;
   overflow-y: auto;
   background: #f9f9f9;
 }

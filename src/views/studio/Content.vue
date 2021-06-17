@@ -1,6 +1,6 @@
 <template>
   <div id="studio_content">
-    <upload v-show="showUploadModal" @close="onCloseModal()"/>
+    <upload-modal v-show="showUploadModal" @close="onCloseModal()"/>
     <div class="head">
       <label>Content</label>
       <button class="click-able" @click="openModal()">UPLOAD</button>
@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import Upload from '../../components/Upload.vue'
+import UploadModal from '../../components/UploadModal.vue'
 
 export default {
-  components: { Upload },
+  components: { UploadModal },
   name: 'Main',
   data(){
     return {
@@ -57,12 +57,13 @@ export default {
 }
 .head label{
   font-size: 20px;
+  font-weight: bold;
 }
 .head button{
   border: 0;
   padding: 0;
   background: transparent;
-  font-size: 16px;
+  font-size: 14px;
   color: blue
 }
 </style>

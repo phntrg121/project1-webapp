@@ -49,7 +49,7 @@ export default {
       .catch(err => console.log(err))
     },
     async getVideos(){      
-      VideoService.getVideoPage(1)
+      VideoService.getVideos()
       .then(res => {
         if(res.data.message == "OK"){
           this.videos = res.data.data

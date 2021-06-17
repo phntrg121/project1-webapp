@@ -37,25 +37,27 @@ export default {
       if(this.loading) return
       this.loading = true
 
-      UserService.singIn({ email: this.email, password: this.password })
-      .then(res => {
-        if(res.data.message == 'OK'){          
-          this.loading = false
-          alert(res.data.message)
-          this.$store.dispatch('signIn', res.data.data)
+      try{
+        let response = (await UserService.singIn({ email: this.email, password: this.password })).data
+        if(response.message != "OK"){
+          alert(response.message)
+        }
+        else{          
+          this.$store.dispatch('signIn', response.data)
+          let channel = (await UserService.getChannel(this.$store.getters.currentUser.id)).data.data       
+          this.$store.dispatch('setChannel', channel)
+          alert(response.message)          
           this.$router.push({ path: this.continuePath })
         }
-        else{                   
-          this.loading = false
-          alert(res.data.message)
-        }
-      })
-      .catch((err)=>{
+      }
+      catch(err){        
         console.log(err)
         alert('Something when wrong')
+      }
+      finally{
         this.loading = false
-      })
-    }
+      }
+    },
   }
 }
 </script>

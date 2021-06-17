@@ -1,32 +1,45 @@
 <template>
   <div id="channel_about">
-    <div class="channel_detail">
-      <div class="description">
+    <div v-if="channel" class="channel_detail">
+      <div v-if="channel.description!=''" class="section">
         <label>Description</label>
-        <p>{{channelDetail.description}}</p>
+        <p>{{channel.description}}</p>
+      </div>
+      <div v-if="channel.contact!=''" class="section">
+        <label>Contact</label>
+        <p>{{channel.contact}}</p>
+      </div>
+      <div v-if="channel.links.lenght>0" class="section">
+        <label>Links</label>
+        <p>{{channel.links}}</p>
       </div>
     </div>
-    <div class="channel_stat">
+    <div v-if="channel" class="channel_stat">
       <div class="stat">
         <label>Stat</label>
-        <label>Joined {{channelDetail.createDate}}</label>
-        <label>{{channelDetail.totalView}} views</label>
+        <label>Joined {{new Date(channel.createdDate).toDateString()}}</label>
+        <!-- <label>{{channelDetail.totalView}} views</label> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import UserService from '../../services/UserService'
 export default {
   name: 'Main',
   data(){
     return {
-      channelDetail: {
-        description: "No description",
-        createDate: new Date().toLocaleDateString()
-      }
+      channel: null,
     }
   },
+  mounted(){
+    UserService.getChannel(this.$route.params.id)
+    .then(res=>{
+      this.channel = res.data.data
+    })
+    .catch(err=>console.log(err))
+  }
 }
 </script>
 
@@ -46,11 +59,11 @@ export default {
   width: 70%;
   margin: 0px 20px;
 }
-.description{  
+.section{  
   padding: 10px 0px;
   border-bottom: 1px solid #cecece;
 }
-.description p{
+.section p{
   font-size: 14px;
 }
 .channel_stat{
