@@ -55,11 +55,10 @@ export default {
   methods: {
     async getPlaylist(listId){
       PlaylistService.getPlaylist(listId)
-      .then(res=>{
+      .then(res=> {
         if(res.data.message == "OK"){
           this.playlist = res.data.data
           this.getCreator()
-          this.checkSub()
         }
       })
       .catch(err=>console.log(err))
@@ -78,10 +77,11 @@ export default {
     },
     async getCreator(){
       this.creator = (await UserService.getById(this.playlist.creator)).data.data
+      this.checkSub()
     },
     async checkSub(){
-      this.isOwned = !this.$store.getters.isAuthenticated ? false: this.playlist.creator.id == this.$store.getters.currentUser.id
-      this.isSubscribed = !this.$store.getters.isAuthenticated ? false : (await SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.playlist.creator })).data.data
+      this.isOwned = (!this.$store.getters.isAuthenticated) ? false: (this.creator.id == this.$store.getters.currentUser.id)
+      this.isSubscribed = (!this.$store.getters.isAuthenticated) ? false : (await SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.playlist.creator })).data.data
     },
     async subscribe(){
       if(this.processingSubscribe) return
@@ -106,8 +106,7 @@ export default {
   },
   mounted(){
     if(this.$route.query.list != "WL" && this.$route.query.list != "LL") this.getPlaylist(this.$route.query.list)
-    else if(this.$store.getters.isAuthenticated && this.$route.query.list == "WL") this.getWL(this.$store.getters.currentUser.id)
-    
+    else if(this.$store.getters.isAuthenticated && this.$route.query.list == "WL") this.getWL(this.$store.getters.currentUser.id)    
   }
 }
 </script>

@@ -40,7 +40,7 @@ export default {
       })
     },
     async getVideo(){
-      this.video = (await VideoService.getVideo(this.videoId)).data.data
+      this.video = (await VideoService.getVideoById(this.videoId)).data.data
     }
   },
   mounted(){

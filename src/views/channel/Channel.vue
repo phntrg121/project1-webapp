@@ -6,11 +6,11 @@
       </div>
     </div>
     <div class="channel_banner">
-      <div v-if="channel" class="banner">
+      <div v-if="user" class="banner">
         <div class="banner_info">
-          <img width="120" height="120" :src="channel.avatar" alt="user image">
+          <img width="120" height="120" :src="user.avatar" alt="user image">
           <div style="display:flex;flex-direction:column">
-            <label style="font-size:20px">{{channel.username}}</label>
+            <label style="font-size:20px">{{user.username}}</label>
             <label v-if="sub" style="font-size:14px;color:#666">{{sub.subscriberCount.toLocaleString()}} subscribers</label>          
           </div>
         </div>        
@@ -23,17 +23,17 @@
     </div>
     <div class="channel_banner">
       <div class="content">
-        <div v-if="channel" class="channel_tabs">
-          <router-link :to="`/channel/${channel.id}`" :class="[($route.name === 'Channel Video')? 'channel_tab select':'channel_tab']">
+        <div v-if="user" class="channel_tabs">
+          <router-link :to="`/channel/${user.id}`" :class="[($route.name === 'Channel Video')? 'channel_tab select':'channel_tab']">
             VIDEOS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/playlists`" :class="[($route.name === 'Channel Playlist')? 'channel_tab select':'channel_tab']">
+          <router-link :to="`/channel/${user.id}/playlists`" :class="[($route.name === 'Channel Playlist')? 'channel_tab select':'channel_tab']">
             PLAYLISTS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/subscriptions`" :class="[($route.name === 'Channel Subscription')? 'channel_tab select':'channel_tab']">
+          <router-link :to="`/channel/${user.id}/subscriptions`" :class="[($route.name === 'Channel Subscription')? 'channel_tab select':'channel_tab']">
             SUBSCRIPTIONS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/about`" :class="[($route.name === 'Channel About')? 'channel_tab select':'channel_tab']">
+          <router-link :to="`/channel/${user.id}/about`" :class="[($route.name === 'Channel About')? 'channel_tab select':'channel_tab']">
             ABOUT
           </router-link>
         </div>
@@ -49,16 +49,14 @@
 
 <script>
 import UserService from '../../services/UserService'
-import Upload from '../../components/Upload.vue'
 import SubscriptionService from '../../services/SubscriptionService'
 
 export default {
-  components: { Upload },
   name: 'Channel',
   data() {
     return{
       mounted: false,
-      channel: null,
+      user: null,
       sub: null,
       isSubscribed: false,
 
@@ -67,9 +65,9 @@ export default {
   },
   methods: {
     isOwner(){
-      if(!channel) return false
+      if(!this.user) return false
       if(!this.$store.getters.isAuthenticated) return false
-      return this.channel.id==this.$store.getters.currentUser.id
+      return this.user.id==this.$store.getters.currentUser.id
     },
     toContent(){
       this.$router.push({
@@ -80,7 +78,7 @@ export default {
       UserService.getById(this.$route.params.id)
       .then(res=>{
         if(res.data.message == "OK"){
-          this.channel = res.data.data          
+          this.user = res.data.data          
           this.getSubCount()
           this.checkSub()
         }
@@ -88,7 +86,7 @@ export default {
       .catch(err=>console.log(err))
     },
     async getSubCount(){
-      SubscriptionService.getSubscriber(this.channel.id)
+      SubscriptionService.getSubscriber(this.user.id)
       .then(res => {
         if(res.data.message == "OK"){
           this.sub = res.data.data
@@ -101,7 +99,7 @@ export default {
         this.isSubscribed = false
         return
       }
-      SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.channel.id })
+      SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.user.id })
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data
@@ -116,7 +114,7 @@ export default {
         return
       }
       this.processingSubscribe = true
-      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.channel.id })
+      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.user.id })
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data

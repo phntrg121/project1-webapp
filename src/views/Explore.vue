@@ -49,7 +49,7 @@ export default {
     async getVideo(select){
       if(select == this.selected) return
       this.selected = select
-      VideoService.getVideoPage(1)
+      VideoService.getVideos()
       .then(res => {
         if(res.data.message == "OK"){
           this.videos = res.data.data
@@ -111,6 +111,7 @@ export default {
   align-items: center;
   max-width: 800px;
   width: 100%;
+  margin-top: 20px
 }
 .explore_item{
   width: 100%;

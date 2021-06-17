@@ -88,53 +88,23 @@ export default {
   },
   methods: {
     async getVideo() {
-      VideoService.getVideo(this.videoId)
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.video = res.data.data
-
-          this.getUploader()
-          this.getRelatedVideo()
-        }
-      })
-      .catch((err)=>console.log(err))
-
-      this.getComment()
-    },
-    async getUploader(){
-      UserService.getById(this.video.uploaderId)
-      .then(res=>{
-        if(res.data.message == "OK"){
-          this.uploader = res.data.data
-          this.getSubCount()
-          this.checkSub()
-        }
-      })
-      .catch(err=>console.log(err))
-    },
-    async getRelatedVideo(){
-      VideoService.getRelatedVideo({ videoId: this.videoId, tags: this.video.tags})
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.relatedVideos = res.data.data
-        }
-      })
-      .catch((err)=>console.log(err))
+      try{
+        this.video = (await VideoService.getVideoById(this.videoId)).data.data
+        this.uploader = (await UserService.getById(this.video.uploaderId)).data.data
+        this.sub = (await SubscriptionService.getSubscriber(this.video.uploaderId)).data.data
+        this.relatedVideos = (await VideoService.getRelatedVideos({ videoId: this.videoId, tags: this.video.tags})).data.data
+        this.checkSub()
+        this.getComment()
+      }
+      catch(err){
+        console.log(err)
+      }
     },
     async getComment(){
       CommentService.getVideoComments(this.videoId)
       .then(res => {
         if(res.data.message=="OK"){
           this.comments = res.data.data
-        }
-      })
-      .catch(err => console.log(err))
-    },
-    async getSubCount(){
-      SubscriptionService.getSubscriber(this.video.uploaderId)
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.sub = res.data.data
         }
       })
       .catch(err => console.log(err))
