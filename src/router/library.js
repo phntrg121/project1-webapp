@@ -1,8 +1,6 @@
 import Library from '../views/library/Library.vue'
 import History from '../views/library/History.vue'
-import MyVideo from '../views/library/MyVideo.vue'
-import Liked from '../views/library/Liked.vue'
-import Playlist from '../views/library/Playlist.vue'
+import Dashboard from '../views/library/Dashboard.vue'
 
 const library = {
   path: '/library',
@@ -10,24 +8,14 @@ const library = {
   component: Library,
   children: [
     {
+      path: '/library',
+      name: 'Library Dashboard',
+      component: Dashboard
+    },
+    {
       path: '/history',
       name: 'History',
       component: History
-    },
-    {
-      path: '/myvideos',
-      name: 'MyVideo',
-      component: MyVideo
-    },
-    {
-      path: '/liked',
-      name: 'Liked',
-      component: Liked
-    },
-    {
-      path: '/playlist',
-      name: 'Playlist',
-      component: Playlist
     },
   ]
 }

@@ -2,21 +2,19 @@ import axios from 'axios'
 import { storage } from './firebase'
 
 export default {
-  getVideoPage(pageNum){
-    let page = pageNum == 1 ? '': `/page=${pageNum}`
-    return axios.get(process.env.VUE_APP_API_URL + '/videos/video' + page)
+  getVideos(){
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/video')
   },
-  getVideo(id){
+  getVideoById(id){
     return axios.get(process.env.VUE_APP_API_URL + '/videos/video/' + id)
   },
-  getRelatedVideo(tags){
+  getRelatedVideos(tags){
     return axios.post(process.env.VUE_APP_API_URL + '/videos/video/related', tags)
   },
   getUploadVideo(id){    
     return axios.get(process.env.VUE_APP_API_URL + '/videos/upload/channel=' + id)
   },
   async upload(video, thumbnail, info){
-
     const ref = storage.ref()
     // //upload thumbnail
     // ref.child(`images/${info.uploaderId}/${new Date().getTime() + '-' +file.name}`).put(file)
@@ -39,9 +37,10 @@ export default {
     //upload video
     let video_snap = await ref.child(`videos/${info.uploaderId}/${new Date().getTime() + '-' + info.title}`).put(video)
     info.videoURL = await video_snap.ref.getDownloadURL()
-
-    console.log(info)
-
+    
     return axios.post(process.env.VUE_APP_API_URL + '/videos/upload', info)
+  },
+  search(query){    
+    return axios.post(process.env.VUE_APP_API_URL + '/videos/video/search', query)
   }
 }

@@ -1,9 +1,11 @@
 <template>
   <div class="video_box">
-    <img class="thumbnail" :src="video.thumbnail" alt="video thumbnail" width="240" height="160" @click="watch()"/>
-    <label class="title" @click="watch()">{{video.title}}</label>
-    <label class="view">{{video.views}} views</label>
+    <div class="thumbnail click-able" @click="watch()">
+      <img :src="video.thumbnail" alt="video thumbnail">
+    </div>
+    <label class="title click-able" @click="watch()">{{video.title}}</label>
     <user-item :uid="video.uploaderId"  class="uploader"/>
+    <label class="view">{{video.views.toLocaleString()}} views</label>
   </div>
 </template>
 
@@ -31,35 +33,42 @@ export default {
 
 <style scoped>
 .video_box{
-  width: 240px;
-  height: 240px;
+  max-width: 320px;
   background: transparent;
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
 }
+.thumbnail{
+  max-width: 320px;
+  max-height: 180px;
+  margin-bottom: 5px;
+}
+.thumbnail img{
+  zoom: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .video_box label{
+  margin-bottom: 5px;
   width: 100%;
-  padding: 0px 10px;
 }
 
 .title{
   font-weight: bold;
+  font-size: 18px
 }
 
 .uploader{
   color: #666;
+  margin-bottom: 5px;
   width: 100%;
-  padding: 0px 10px;
 }
 
 .view{
   font-size: 13px;
   color: #666;
-}
-
-.title:hover, .thumbnail:hover{
-  cursor: pointer;
 }
 </style>

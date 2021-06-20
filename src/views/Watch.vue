@@ -4,7 +4,7 @@
     <div v-if="video" class="video">
       <div class="video_watch">
         <div class="player">
-          <video :src="video.videoURL" type="video/mp4" controls></video>
+          <video :src="video.videoURL" type="video/mp4" controls @play="updateView()"></video>
           <div class="tag_list">
             <div v-for="tag in video.tags" :key="tag">
               <router-link class="tag" to="">#{{tag}}</router-link>
@@ -12,8 +12,8 @@
           </div>
           <label class="title">{{ video.title }}</label>
           <div class="view_like">
-            <label>{{video.views}} views</label>
-            <button>{{video.likes}} Like</button>
+            <label>{{video.views.toLocaleString()}} views</label>
+            <like-button style="font-size: 16px" :likes="video.likes" :isLiked="isLiked" @onPress="onLikePress"/>
           </div>
         </div>        
         <div class="video_info">          
@@ -22,7 +22,7 @@
               <img :src="uploader.avatar" alt="">
               <div>
                 <label class="uploader_name">{{uploader.username}}</label>
-                <label class="uploader_sub">{{sub.subscriberCount}} subscribers</label>
+                <label class="uploader_sub">{{sub.subscriberCount.toLocaleString()}} subscribers</label>
               </div>
             </div>
             <button v-show="!owned" :class="[isSubscribed? 'video_subscribe subscribed':'video_subscribe not_subscribed']" @click="subscribe">SUBSCRIBE</button>
@@ -42,7 +42,6 @@
         </div>
       </div>
       <div class="related_video">
-        <label>Related Videos</label>
         <div v-for="video in relatedVideos" :key="video">
           <related-video :video="video"/>
         </div>
@@ -54,6 +53,7 @@
 <script>
 import Comment from '../components/Comment.vue'
 import CommentInput from '../components/CommentInput.vue'
+import LikeButton from '../components/LikeButton.vue'
 import NavBar from '../components/NavBar.vue'
 import RelatedVideo from '../components/RelatedVideo.vue'
 import UserService from '../services/UserService'
@@ -67,7 +67,8 @@ export default {
     NavBar,
     RelatedVideo,
     CommentInput,
-    Comment
+    Comment,
+    LikeButton
   },
   data(){    
     return{
@@ -78,58 +79,32 @@ export default {
       owned: false,
       videoId: this.$route.params.id,
       relatedVideos: [],
-      comments: []
+      comments: [],
+      isLiked: false,
+      isPlayed: false,
+
+      processingSubscribe: false,
     }
   },
   methods: {
     async getVideo() {
-      VideoService.getVideo(this.videoId)
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.video = res.data.data
-
-          this.getUploader()
-          this.getRelatedVideo()
-        }
-      })
-      .catch((err)=>console.log(err))
-
-      this.getComment()
-    },
-    async getUploader(){
-      UserService.getById(this.video.uploaderId)
-      .then(res=>{
-        if(res.data.message == "OK"){
-          this.uploader = res.data.data
-          this.getSubCount()
-          this.checkSub()
-        }
-      })
-      .catch(err=>console.log(err))
-    },
-    async getRelatedVideo(){
-      VideoService.getRelatedVideo({ videoId: this.videoId, tags: this.video.tags})
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.relatedVideos = res.data.data
-        }
-      })
-      .catch((err)=>console.log(err))
+      try{
+        this.video = (await VideoService.getVideoById(this.videoId)).data.data
+        this.uploader = (await UserService.getById(this.video.uploaderId)).data.data
+        this.sub = (await SubscriptionService.getSubscriber(this.video.uploaderId)).data.data
+        this.relatedVideos = (await VideoService.getRelatedVideos({ videoId: this.videoId, tags: this.video.tags})).data.data
+        this.checkSub()
+        this.getComment()
+      }
+      catch(err){
+        console.log(err)
+      }
     },
     async getComment(){
       CommentService.getVideoComments(this.videoId)
       .then(res => {
         if(res.data.message=="OK"){
           this.comments = res.data.data
-        }
-      })
-      .catch(err => console.log(err))
-    },
-    async getSubCount(){
-      SubscriptionService.getSubscriber(this.video.uploaderId)
-      .then(res => {
-        if(res.data.message == "OK"){
-          this.sub = res.data.data
         }
       })
       .catch(err => console.log(err))
@@ -149,20 +124,37 @@ export default {
       .catch(err => console.log(err))
     },
     async subscribe(){
+      if(this.processingSubscribe) return
       if(!this.$store.getters.isAuthenticated){
-        this.$router.push({ name: 'SignIn' })
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
         return
       }
+      this.processingSubscribe = true
       SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.video.uploaderId })
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
         }
       })
       .catch(err => console.log(err))
     },
     onSuccessPost(value){
       this.comments.splice(0,0,value)
+    },
+    onLikePress(){
+      this.video.likes += this.isLiked? -1: 1
+      this.isLiked = !this.isLiked
+    },
+    async updateView(){
+      if(!this.isPlayed){
+        this.video.views++
+        this.isPlayed = true
+      }
     }
   },
   mounted(){
@@ -181,15 +173,16 @@ export default {
   justify-content: center;
 }
 .video{
-  padding: 20px;
-  width: 100% - 40px;
+  margin: 20px;
+  width: calc(100% - 40px);
   display: flex;
 }
 
 .tag_list{
   display: flex;
   flex-wrap: wrap;
-  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .tag{
@@ -199,7 +192,8 @@ export default {
 }
 
 .video_watch{  
-  width: 70%;
+  width: 100%;
+  max-width: 720px;
 }
 
 .player{
@@ -212,14 +206,17 @@ export default {
 
 .title{
   font-size: 20px;
-  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   font-weight: 400;
 }
 
 .view_like{
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .video_info{
@@ -256,7 +253,7 @@ export default {
 
 .video_subscribe{
   font-weight: bold;
-  padding: 5px 20px;
+  padding: 10px 20px;
   text-decoration: 0;
   border: 0;
 }
@@ -292,7 +289,7 @@ export default {
 .related_video{
   height: 100%;
   width: 100%;
-  padding: 10px;
-  max-width: 300px;
+  margin-left: 10px;
+  max-width: 360px;
 }
 </style>

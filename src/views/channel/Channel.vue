@@ -1,41 +1,40 @@
 <template>
-  <div id="channel">
+  <div v-if="mounted" id="channel">
     <div class="channel_banner">
       <div class="banner_img">
         <img/>
       </div>
     </div>
     <div class="channel_banner">
-      <div v-if="channel" class="banner">
+      <div v-if="user" class="banner">
         <div class="banner_info">
-          <img width="120" height="120" :src="channel.avatar" alt="user image">
+          <img width="120" height="120" :src="user.avatar" alt="user image">
           <div style="display:flex;flex-direction:column">
-            <label style="font-size:20px">{{channel.username}}</label>
-            <label style="font-size:14px;color:#666">{{subCount}} subscribers</label>          
+            <label style="font-size:20px">{{user.username}}</label>
+            <label v-if="sub" style="font-size:14px;color:#666">{{sub.subscriberCount.toLocaleString()}} subscribers</label>          
           </div>
         </div>        
         <div class="banner_button">
-          <button v-if="isOwner()" class="btn_enable" @click="toUpload">UPLOAD</button>
-          <button v-if="isOwner()" class="btn_enable" @click="toEdit">EDIT</button>
-          <button v-if="!isOwner()" :class="[(true) ? 'btn_disble' : 'btn_enable']">SUBSCRIBE</button>
+          <button v-if="isOwner()" class="btn_enable" @click="toContent">MANAGE CHANNEL</button>
+          <button v-if="!isOwner()" :class="[(isSubscribed) ? 'btn_disble' : 'btn_enable']" @click="subscribe">SUBSCRIBE</button>
         </div>
         <input type="file" style="display: none" ref="fileInput" accept="video/*" @change="onFilePicked"/>
       </div>
     </div>
     <div class="channel_banner">
       <div class="content">
-        <div v-if="channel" class="channel_tabs">
-          <router-link :to="`/channel/${channel.id}`" :class="[($route.name === 'Channel Video')? 'channel_tab select':'channel_tab']">
-            Videos
+        <div v-if="user" class="channel_tabs">
+          <router-link :to="`/channel/${user.id}`" :class="[($route.name === 'Channel Video')? 'channel_tab select':'channel_tab']">
+            VIDEOS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/likes`" :class="[($route.name === 'Channel Like')? 'channel_tab select':'channel_tab']">
-            Likes
+          <router-link :to="`/channel/${user.id}/playlists`" :class="[($route.name === 'Channel Playlist')? 'channel_tab select':'channel_tab']">
+            PLAYLISTS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/subscribers`" :class="[($route.name === 'Channel Subscriber')? 'channel_tab select':'channel_tab']">
-            Subscribers
+          <router-link :to="`/channel/${user.id}/subscriptions`" :class="[($route.name === 'Channel Subscription')? 'channel_tab select':'channel_tab']">
+            SUBSCRIPTIONS
           </router-link>
-          <router-link :to="`/channel/${channel.id}/about`" :class="[($route.name === 'Channel About')? 'channel_tab select':'channel_tab']">
-            About
+          <router-link :to="`/channel/${user.id}/about`" :class="[($route.name === 'Channel About')? 'channel_tab select':'channel_tab']">
+            ABOUT
           </router-link>
         </div>
       </div>
@@ -50,46 +49,88 @@
 
 <script>
 import UserService from '../../services/UserService'
-import Upload from '../../components/Upload.vue'
+import SubscriptionService from '../../services/SubscriptionService'
 
 export default {
-  components: { Upload },
   name: 'Channel',
   data() {
     return{
-      channel: null,
-      subCount: 0,
+      mounted: false,
+      user: null,
+      sub: null,
+      isSubscribed: false,
+
+      processingSubscribe: false,
     }
   },
   methods: {
     isOwner(){
-      if(!channel) return false
+      if(!this.user) return false
       if(!this.$store.getters.isAuthenticated) return false
-      return this.channel.id==this.$store.getters.currentUser.id
+      return this.user.id==this.$store.getters.currentUser.id
     },
-    toUpload(){
+    toContent(){
       this.$router.push({
-        path:`/content/${this.$store.getters.currentUser.id}/`,
-        params: { upload: true},
-      })
-    },
-    toEdit(){
-      this.$router.push({
-        path:`/content/${this.$store.getters.currentUser.id}`,
+        path:`/studio/${this.$store.getters.currentUser.id}`,
       })
     },
     async getChannelInfo(){
       UserService.getById(this.$route.params.id)
       .then(res=>{
         if(res.data.message == "OK"){
-          this.channel = res.data.data
+          this.user = res.data.data          
+          this.getSubCount()
+          this.checkSub()
         }
       })
       .catch(err=>console.log(err))
-    },   
+    },
+    async getSubCount(){
+      SubscriptionService.getSubscriber(this.user.id)
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.sub = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    },
+    async checkSub(){
+      if(!this.$store.getters.isAuthenticated){
+        this.isSubscribed = false
+        return
+      }
+      SubscriptionService.isSubscribed({ userId: this.$store.getters.currentUser.id, otherId: this.user.id })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+    },
+    async subscribe(){
+      if(this.processingSubscribe) return
+      if(!this.$store.getters.isAuthenticated){
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
+        return
+      }
+      this.processingSubscribe = true
+      SubscriptionService.subscribe({ userId: this.$store.getters.currentUser.id, otherId: this.user.id })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isSubscribed = res.data.data
+          this.processingSubscribe = false
+        }
+        else{
+          alert("Subscribe error")
+          this.processingSubscribe = false
+        }
+      })
+      .catch(err => console.log(err))
+    },
   },
   mounted(){
     this.getChannelInfo()
+    this.mounted = true
   }
 }
 </script>
@@ -175,6 +216,7 @@ export default {
   width: 100%;
   max-width: 960px;
   flex-direction: column;
+  margin: 0px 10px;
 }
 
 .channel_tabs{

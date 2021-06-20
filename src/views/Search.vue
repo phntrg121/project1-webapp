@@ -1,74 +1,69 @@
 <template>
   <div id="search">
-    <div class="search_advance">
-      <label>FILTERS</label>
+    <div class="search_filter">
+      <label class="click-able">FILTERS</label>
       <div v-if="filterShow" class="filter">
-
       </div>
     </div>
     <div class="search_result">
-      <div style="margin: 10px;">Results for:<span style="font-weight: bold">{{text}}</span></div>
-      <div v-for="video in results" :key="video">
-        <video-item :video="video"/>
+      <div v-if="results.length==0">
+        <label>No result for<span style="margin-left: 8px;font-weight: bold">{{query}}</span></label>
       </div>
-    </div>
+      <div v-else>
+        <div v-for="video in results" :key="video">
+          <search-item :video="video"/>
+        </div>
+      </div>
+    </div>    
   </div>
 </template>
 
 <script>
-import VideoItem from '../components/VideoItem.vue'
+import SearchItem from '../components/SearchItem.vue'
+import VideoService from '../services/VideoService'
 
 export default {
   name: 'Search',
   components: {
-    VideoItem
+    SearchItem
   },
   data(){
     return{
-      text: this.$route.query['query'],
+      query: this.$route.query['query'],
       filterShow: false,
-      results: [
-        {
-          title: 'asdad',
-          uploader: 'mr zero',
-          views: 44577
-        },
-        {
-          title: 'ssjjfsssr33',
-          uploader: 'looolll',
-          views: 12321
-        },
-        {
-          title: 'wwwee rsjkhkjxdw',
-          uploader: 'ass boom',
-          views: 9943369
-        },
-        {
-          title: 'sssf jdhflkdh fuck',
-          uploader: 'sdasd dddd',
-          views: 572164
-        },
-      ]
+      results: []
     }
   },
   mounted(){
-    //this.results = []
+    VideoService.search({query: this.query})
+    .then(res=>{
+      this.results = res.data.data
+    })
+    .catch(err=>console.log(err))
   }
 }
 </script>
 
 <style scoped>
-.search_advance{
-  width: calc(100% -20px);
-  border-bottom: 2px solid #666;
-  margin: 0px 10px;
-  padding: 10px;
-}
-.search_advance > label:hover{
-  cursor: pointer;
-}
-.search_result{
-  margin: 10px;
+#search{
+  display: flex;
+  flex-direction: column;
   width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  padding: 10px;
+  align-items: center;
+}
+
+.search_filter{
+  width: 100%;
+  border-bottom: 1px solid #cecece;
+  padding: 10px 0px;
+  margin-bottom: 10px;
+  max-width: 800px;
+}
+
+.search_result{
+  width: 100%;
+  max-width: 800px;
 }
 </style>
