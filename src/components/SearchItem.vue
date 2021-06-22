@@ -1,5 +1,5 @@
 <template>
-  <div id="search_item">
+  <div v-if="video" id="search_item">
     <div class="video_thumbnail click-able" @click="watch()">
       <img :src="video.thumbnail" alt="video thumbnail">
     </div>
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import VideoService from '../services/VideoService'
 import UserItem from './UserItem.vue'
 
 export default {
@@ -21,7 +22,13 @@ export default {
     UserItem
   },
   props:{
-    video: Object,
+    data: Object,
+    id: String,
+  },
+  data(){
+    return{
+      video: this.data,
+    }
   },
   methods:{
     watch(){
@@ -29,6 +36,15 @@ export default {
         name: 'Watch',
         params: { id: this.video.id } 
       })
+    }
+  },
+  mounted(){
+    if(!this.data){
+      VideoService.getVideoById(this.id)
+      .then(res=>{
+        this.video = res.data.data
+      })
+      .catch(err=>console.log(err))
     }
   }
 }

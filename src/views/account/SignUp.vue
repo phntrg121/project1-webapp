@@ -32,6 +32,8 @@
 import UserService from '../../services/UserService'
 import SubscriptionService from '../../services/SubscriptionService'
 import PlaylistService from '../../services/PlaylistService'
+import LikeService from '../../services/LikeService'
+import HistoryService from '../../services/HistoryService'
 
 export default {
   name: 'signin',
@@ -52,7 +54,7 @@ export default {
       this.loading = true
 
       try{
-        let response = UserService.signUp({ email: this.email, username: this.username, password: this.password })
+        let response = (await UserService.signUp({ email: this.email, username: this.username, password: this.password })).data
         if(response.message != "OK"){
           alert(response.message)
         }
@@ -60,6 +62,8 @@ export default {
           let user = response.data
           await SubscriptionService.createSub(user.id)
           await PlaylistService.createWL(user.id)
+          await LikeService.createLikedList(user.id)
+          await HistoryService.createHistory(user.id)
           await UserService.createChannel(user.id)          
           this.$store.dispatch('signUp', user)
           let channel = (await UserService.createChannel(this.$store.getters.currentUser.id)).data.data
