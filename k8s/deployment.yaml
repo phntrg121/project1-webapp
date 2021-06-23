@@ -1,70 +1,70 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prj1-webapp-deployment
+  name: webapp-deployment
   labels:
-    app: prj1-webapp
+    app: webapp
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: prj1-webapp
+      app: webapp
   template:
     metadata:
       labels:
-        app: prj1-webapp
+        app: webapp
     spec:
       containers:
-      - name: prj1-webapp
-        image: prj1-webapp:latest
+      - name: webapp
+        image: webapp:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 80    
+        - containerPort: 8080    
         env:
         - name: VUE_APP_API_URL
-          value: "http://prj1-gateway-service.default.svc.cluster.local:8081"
+          value: "http://127.0.0.1:8081"
         - name: VUE_APP_FIREBASE_API_KEY
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-api-key
         - name: VUE_APP_FIREBASE_AUTH_DOMAIN
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-auth-domain
         - name: VUE_APP_FIREBASE_PROJECT_ID
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-project-id
         - name: VUE_APP_FIREBASE_STORAGE_BUCKET
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-storage-bucket
         - name: VUE_APP_FIREBASE_MESSAGING_SENDER_ID
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-messaging-sender-id
         - name: VUE_APP_FIREBASE_APP_ID
           valueFrom:
             secretKeyRef:
-              name: prj1-webapp-secret
+              name: webapp-secret
               key: vue-app-firebase-app-id
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: prj1-webapp-service
+  name: webapp-service
 spec:
   selector:
-    app: prj1-webapp
+    app: webapp
   type: LoadBalancer
   ports:
-    - name: prj1-webapp-service
-      port: 80
-      targetPort: 80
+    - name: webapp-service
+      port: 8080
+      targetPort: 8080
       protocol: TCP
