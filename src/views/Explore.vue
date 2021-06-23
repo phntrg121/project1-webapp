@@ -22,7 +22,7 @@
     <div class="content" style="background-color: #f1f1f1;">
       <div class="explore_videos" >
         <div class="explore_item" v-for="video in videos" :key="video">
-          <search-item :video="video"/>
+          <search-item :data="video"/>
         </div>
       </div>
     </div>    

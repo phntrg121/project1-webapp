@@ -3,7 +3,7 @@
     <div class="history_list">
       <label>Watch history</label>
       <div class="video_list" v-for="video in videos" :key="video">
-        <search-item :video="video"/>
+        <search-item :id="video.videoId"/>
       </div>
     </div>
     <div class="history_filter">
@@ -16,6 +16,7 @@
 
 <script>
 import SearchItem from '../../components/SearchItem.vue'
+import HistoryService from '../../services/HistoryService'
 
 export default {
   name: 'History',
@@ -24,41 +25,53 @@ export default {
   },
   data(){
     return{
-      videos: [
-        {
-          id:"609f1aa5a50d912e40b6ae34",
-          title:"Rain in summer",
-          uploaderId:"609f1ba48419a409d4429353",
-          thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-          views: "0",
-          description:"Rose are red, Violet are blue, Rain are sad"
-        },
-        {
-          id:"609f1aa5a50d912e40b6ae34",
-          title:"Rain in summer",
-          uploaderId:"609f1ba48419a409d4429353",
-          thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-          views: "0",
-          description:"Rose are red, Violet are blue, Rain are sad"
-        },
-        {
-          id:"609f1aa5a50d912e40b6ae34",
-          title:"Rain in summer",
-          uploaderId:"609f1ba48419a409d4429353",
-          thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-          views: "0",
-          description:"Rose are red, Violet are blue, Rain are sad"
-        },
-        {
-          id:"609f1aa5a50d912e40b6ae34",
-          title:"Rain in summer",
-          uploaderId:"609f1ba48419a409d4429353",
-          thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
-          views: "0",
-          description:"Rose are red, Violet are blue, Rain are sad"
-        },
-      ]
+      videos: [],
+      //   {
+      //     id:"609f1aa5a50d912e40b6ae34",
+      //     title:"Rain in summer",
+      //     uploaderId:"609f1ba48419a409d4429353",
+      //     thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
+      //     views: "0",
+      //     description:"Rose are red, Violet are blue, Rain are sad"
+      //   },
+      //   {
+      //     id:"609f1aa5a50d912e40b6ae34",
+      //     title:"Rain in summer",
+      //     uploaderId:"609f1ba48419a409d4429353",
+      //     thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
+      //     views: "0",
+      //     description:"Rose are red, Violet are blue, Rain are sad"
+      //   },
+      //   {
+      //     id:"609f1aa5a50d912e40b6ae34",
+      //     title:"Rain in summer",
+      //     uploaderId:"609f1ba48419a409d4429353",
+      //     thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
+      //     views: "0",
+      //     description:"Rose are red, Violet are blue, Rain are sad"
+      //   },
+      //   {
+      //     id:"609f1aa5a50d912e40b6ae34",
+      //     title:"Rain in summer",
+      //     uploaderId:"609f1ba48419a409d4429353",
+      //     thumbnail:"https://wallpapercave.com/wp/G4qMVSo.jpg",
+      //     views: "0",
+      //     description:"Rose are red, Violet are blue, Rain are sad"
+      //   },
+      // ]
     }
+  },
+  methods:{
+    async getHistories(){
+      HistoryService.getHistory(this.$store.getters.currentUser.id)
+      .then(res=>{
+        this.videos = res.data.data
+      })
+      .catch(err=>console.log(err))
+    }
+  },
+  mounted(){
+    this.getHistories()
   }
 }
 </script>

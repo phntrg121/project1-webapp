@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <div v-for="video in results" :key="video">
-          <search-item :video="video"/>
+          <search-item :data="video"/>
         </div>
       </div>
     </div>    

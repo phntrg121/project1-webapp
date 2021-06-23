@@ -12,6 +12,9 @@ export default {
     return axios.post(process.env.VUE_APP_API_URL + '/videos/video/related', tags)
   },
   getUploadVideo(id){    
+    return axios.get(process.env.VUE_APP_API_URL + '/videos/upload/public/channel=' + id)
+  },
+  getAllUploadVideo(id){    
     return axios.get(process.env.VUE_APP_API_URL + '/videos/upload/channel=' + id)
   },
   async upload(video, thumbnail, info){
@@ -42,5 +45,17 @@ export default {
   },
   search(query){    
     return axios.post(process.env.VUE_APP_API_URL + '/videos/video/search', query)
+  },
+  putView(id, params){
+    return axios.put(process.env.VUE_APP_API_URL + '/videos/video/view/' + id, params)
+  },
+  putLike(id, params){
+    return axios.put(process.env.VUE_APP_API_URL + '/videos/video/like/' + id, params)
+  },
+  putComment(id, params){
+    return axios.put(process.env.VUE_APP_API_URL + '/videos/video/comment/' + id, params)
+  },
+  setVisibility(id, params){
+    return axios.put(process.env.VUE_APP_API_URL + '/videos/video/visibility/' + id, params)
   }
 }
