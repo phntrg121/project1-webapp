@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: webapp
+spec:
+  minReplicas: 1
+  maxReplicas: 4
+  scaleTargetRef:
+    apiVersion: extensions/v1v1beta1
+    kind: Deployment
+    name: webapp-deployment # TARGET name of the deployment the autoscaler need to be run on
+  targetCPUUtilizationPercentage: 30 # CPU maximum amount of use on the pod is set to 30%.

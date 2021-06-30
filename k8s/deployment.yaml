@@ -2,11 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webapp-deployment
+  namespace: project1
   labels:
     app: webapp
 spec:
   replicas: 1
-  revisionHistoryLimit: 2
+  revisionHistoryLimit: 2  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: webapp
@@ -20,7 +26,14 @@ spec:
         image: webapp:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 8080    
+        - containerPort: 8080
+        # resources:
+        #   requests:
+        #     memory: "200Mi"
+        #     cpu: "500m"
+        #   limits:
+        #     memory: "200Mi"
+        #     cpu: "1000m"
         env:
         - name: VUE_APP_API_URL
           value: "http://127.0.0.1:8081"
@@ -59,6 +72,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: webapp-service
+  namespace: project1
 spec:
   selector:
     app: webapp
