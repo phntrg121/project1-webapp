@@ -60,6 +60,8 @@ import UserService from '../services/UserService'
 import VideoService from '../services/VideoService'
 import CommentService from '../services/CommentService'
 import SubscriptionService from '../services/SubscriptionService'
+import LikeService from '../services/LikeService'
+import HistoryService from '../services/HistoryService'
 
 export default {
   name: '',
@@ -84,6 +86,7 @@ export default {
       isPlayed: false,
 
       processingSubscribe: false,
+      processingLike: false,
     }
   },
   methods: {
@@ -94,6 +97,7 @@ export default {
         this.sub = (await SubscriptionService.getSubscriber(this.video.uploaderId)).data.data
         this.relatedVideos = (await VideoService.getRelatedVideos({ videoId: this.videoId, tags: this.video.tags})).data.data
         this.checkSub()
+        this.checkLike()
         this.getComment()
       }
       catch(err){
@@ -134,26 +138,61 @@ export default {
       .then(res => {
         if(res.data.message == "OK"){
           this.isSubscribed = res.data.data
-          this.processingSubscribe = false
         }
         else{
           alert("Subscribe error")
-          this.processingSubscribe = false
         }
       })
       .catch(err => console.log(err))
+      .finally(()=>{
+        this.processingSubscribe = false        
+      })
     },
     onSuccessPost(value){
       this.comments.splice(0,0,value)
     },
-    onLikePress(){
-      this.video.likes += this.isLiked? -1: 1
-      this.isLiked = !this.isLiked
+    async checkLike(){      
+      if(!this.$store.getters.isAuthenticated) return
+      LikeService.checkVideo({ userId: this.$store.getters.currentUser.id, videoId: this.video.id })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isLiked = res.data.data
+        }
+      })
+      .catch(err => console.log(err))
+
+    },
+    async onLikePress(){
+      if(this.processingLike) return
+      if(!this.$store.getters.isAuthenticated){
+        this.$router.push({path:"/account/signin", query: {continue: this.$route.fullPath}})
+        return
+      }
+      this.processingLike = true
+      LikeService.likeVideo({ userId: this.$store.getters.currentUser.id, videoId: this.video.id })
+      .then(res => {
+        if(res.data.message == "OK"){
+          this.isLiked = res.data.data          
+          this.video.likes += this.isLiked? 1: -1
+          VideoService.putLike(this.videoId,{like: this.isLiked? 1: -1})
+        }
+        else{
+          alert("Like error")
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(()=>{
+        this.processingLike = false        
+      })
     },
     async updateView(){
       if(!this.isPlayed){
-        this.video.views++
         this.isPlayed = true
+        this.video.views++
+        VideoService.putView(this.videoId,{})
+        if(this.$store.getters.isAuthenticated){
+          HistoryService.pushHistory(this.$store.getters.currentUser.id, {videoId: this.videoId, lastWatched: Date.now()})
+        }
       }
     }
   },

@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import UserService from '../services/UserService'
 import UserItem from '../components/UserItem'
 
 export default {
@@ -21,11 +20,6 @@ export default {
   props: {    
     video: Object,
   },
-  data(){
-    return {
-      uploader: null,
-    }
-  },
   methods:{
     watch(){
       this.$router.push({
@@ -34,15 +28,6 @@ export default {
       })
     }
   },
-  mounted(){
-    UserService.getById(this.video.uploaderId)
-    .then(res => {
-      if(res.data.message == 'OK'){
-        this.uploader = res.data.data
-      }
-    })
-    .catch((err)=>console.log(err))
-  }
 }
 </script>
 

@@ -34,6 +34,7 @@
 <script>
 import PlaylistVideoItem from '../components/PlaylistVideoItem.vue'
 import PlaylistService from '../services/PlaylistService'
+import LikeService from '../services/LikeService'
 import SubscriptionService from '../services/SubscriptionService'
 import UserService from '../services/UserService'
 
@@ -64,8 +65,18 @@ export default {
       .catch(err=>console.log(err))
     },
     async getWL(uid){
-      console.log(uid)
       PlaylistService.getWL(uid)
+      .then(res=>{
+        if(res.data.message == "OK"){
+          this.playlist = res.data.data
+          this.creator = this.$store.getters.currentUser
+          this.checkSub()
+        }
+      })
+      .catch(err=>console.log(err))
+    },
+    async getLL(uid){
+      LikeService.getLikedVideoList(uid)
       .then(res=>{
         if(res.data.message == "OK"){
           this.playlist = res.data.data
@@ -107,6 +118,7 @@ export default {
   mounted(){
     if(this.$route.query.list != "WL" && this.$route.query.list != "LL") this.getPlaylist(this.$route.query.list)
     else if(this.$store.getters.isAuthenticated && this.$route.query.list == "WL") this.getWL(this.$store.getters.currentUser.id)    
+    else if(this.$store.getters.isAuthenticated && this.$route.query.list == "LL") this.getLL(this.$store.getters.currentUser.id)    
   }
 }
 </script>
